@@ -1,0 +1,74 @@
+<?php
+/**
+ * Digg pagination style
+ *
+ * @preview  « Previous  1 2 … 5 6 7 8 9 10 11 12 13 14 … 25 26  Next »
+ */
+?>
+
+<div class="pagination">
+    <ul>
+        <?php if ((isset($this->previous))): ?>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $this->previous )); ?>">&laquo;</a></li>
+        <?php else: ?>
+            <li class="disabled"><a href="#">&laquo;</a></li>
+        <?php endif; ?>
+
+        <?php if ($this->pageCount < 13): /* « Previous  1 2 3 4 5 6 7 8 9 10 11 12  Next » */ ?>
+            <?php for ($i = 1; $i <= $this->pageCount; $i++): ?>
+                <?php if ($i == $this->current): ?>
+                    <li class="active"><a href="#"><?php echo $i ?></a></li>
+                <?php else: ?>
+                    <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $i )); ?>"><?php echo $i ?></a></li>
+                <?php endif ?>
+            <?php endfor ?>
+        <?php elseif ($this->current < 9): /* « Previous  1 2 3 4 5 6 7 8 9 10 … 25 26  Next » */ ?>
+            <?php for ($i = 1; $i <= 10; $i++): ?>
+                <?php if ($i == $this->current): ?>
+                    <li class="active"><a href="#"><?php echo $i ?></a></li>
+                <?php else: ?>
+                    <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $i )); ?>"><?php echo $i ?></a></li>
+                <?php endif ?>
+            <?php endfor ?>
+
+            <li class="disabled"><a href="#">&hellip;</a></li>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $this->pageCount - 1 )); ?>"><?php echo $this->pageCount - 1 ?></a></li>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' =>  $this->pageCount )); ?>"><?php echo $this->pageCount ?></a></li>
+        <?php elseif ($this->current > $this->pageCount - 8): /* « Previous  1 2 … 17 18 19 20 21 22 23 24 25 26  Next » */ ?>
+
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => 1 )); ?>">1</a></li>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => 2 )); ?>">2</a></li>
+            <li class="disabled"><a href="#">&hellip;</a></li>
+
+            <?php for ($i = $this->pageCount - 9; $i <= $this->pageCount; $i++): ?>
+                <?php if ($i == $this->current): ?>
+                    <li class="active"><a href="#"><?php echo $i ?></a></li>
+                <?php else: ?>
+                    <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $i )); ?>"><?php echo $i ?></a></li>
+                <?php endif ?>
+            <?php endfor ?>
+        <?php else: /* « Previous  1 2 … 5 6 7 8 9 10 11 12 13 14 … 25 26  Next » */ ?>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => 1 )); ?>">1</a></li>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => 2 )); ?>">2</a></li>
+            <li class="disabled"><a href="#">&hellip;</a></li>
+
+            <?php for ($i = $this->current - 5; $i <= $this->current + 5; $i++): ?>
+                <?php if ($i == $this->current): ?>
+                    <li class="active"><a href="#"><?php echo $i ?></a></li>
+                <?php else: ?>
+                    <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $i )); ?>"><?php echo $i ?></a></li>
+                <?php endif ?>
+            <?php endfor ?>
+
+            <li class="disabled"><a href="#">&hellip;</a></li>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $this->pageCount - 1 )); ?>"><?php echo $this->pageCount - 1 ?></a></li>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $this->pageCount )); ?>"><?php echo $this->pageCount ?></a></li>
+        <?php endif ?>
+
+        <?php if (isset($this->next)): ?>
+            <li><a href="<?php echo $this->url($this->route, array( 'id' => $this->id, 'page' => $this->next )); ?>">&raquo;</a></li>
+        <?php else: ?>
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        <?php endif ?>
+    </ul>
+</div>

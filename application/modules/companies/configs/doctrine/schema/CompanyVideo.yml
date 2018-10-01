@@ -1,0 +1,45 @@
+Companies_Model_CompanyVideo:
+  tableName: company_videos
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      unsigned: true
+      notnull: true
+      autoincrement: true
+    company_id:
+      type: integer(4)
+      notnull: true
+    review_id:
+      type: integer(4)
+    name:
+      type: string(1000)
+      notnull: true
+    width:
+      type: integer(4)
+    height:
+      type: integer(4)
+    status:
+      type: enum
+      values: ['not_processed','processing','error','processed']
+      notnull: true
+      default: not_processed
+  relations:
+    Company:
+      class: Companies_Model_Company
+      local: company_id
+      foreign: id
+      foreignAlias: Videos
+      onDelete: cascade
+      onUpdate: cascade
+    Review:
+      class: Companies_Model_Review
+      local: review_id
+      foreign: id
+      foreignAlias: Videos
+      onDelete: cascade
+      onUpdate: cascade

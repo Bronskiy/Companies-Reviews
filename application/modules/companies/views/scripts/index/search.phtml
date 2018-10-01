@@ -1,0 +1,21 @@
+<form enctype="application/x-www-form-urlencoded" method="post" class="form-horizontal" action="<?php echo $this->url('search'); ?>">
+    <fieldset>
+        <?php foreach ($this->searchForm->getElements() as $element): ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $element; ?>
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Search</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

@@ -1,0 +1,9 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    You have a new published review from <?php echo $this->review->client_name; ?>
+    (<?php echo $this->review->mail; ?>). Please check out your
+    <a href="<?php echo $this->companyUrl; ?>">company profile</a>.
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

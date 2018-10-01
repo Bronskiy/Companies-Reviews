@@ -1,0 +1,33 @@
+<?php if ($this->showSuccess): ?>
+    <p>
+        Account successfully created. We've sent you an email with a link to activate your account.<br>
+        If you don't receive the message within a few minutes, please check your spam folder or
+        <a href="#resend" onclick="$('#resend-form').submit();">resend a message</a>.
+    </p>
+
+    <?php
+        echo $this->partial("form.phtml", array(
+            "id" => "resend-form",
+            "form" => $this->resendForm,
+            "action" => $this->url("signup"),
+        ));
+    ?>
+<?php else: ?>
+    <?php
+        echo $this->partial("form.phtml", array(
+            "form" => $this->regForm,
+            "action" => $this->url("signup"),
+            "id" => 'sign_up_form',
+            "button" => "Sign Up",
+            "extraButton" => array(
+                "label" => "Login",
+                "url" => $this->url("login")
+            )
+        ));
+    ?>
+<?php endif; ?>
+<script>
+    $(function () {
+        onLocalBusinessCheckboxChange();
+    });
+</script>

@@ -1,0 +1,106 @@
+<br>
+<style>
+    .revudio-company-block-small {
+        border: 1px solid #818181;
+        width: 225px;
+        border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        margin-top: 10px;
+        padding: 0;
+        font-family: Tahoma, Verdana;
+        cursor: pointer;
+        background: white url("<?php echo $this->serverUrl(); ?>/images/banner/background-small.png") bottom right no-repeat;
+    }
+    .revudio-company-block-title-small {
+        display: block;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 1px solid #818181;
+        margin: 0 -6px 6px;
+        padding-bottom: 6px;
+    }
+    .revudio-company-block-top-small{
+        padding: 6px;
+        border-bottom: 0px solid #818181;
+        overflow: hidden;
+        margin: 0;
+        height: auto;
+    }
+    .revudio-company-block-top-left-small{
+        float: left;
+        width: 48px;
+        margin: 0;
+        padding: 0;
+        height: 37px;
+    }
+    .revudio-company-block-top-right-small{
+        float: left;
+        width: 150px;
+        height: 37px;
+        margin-left: 10px;
+    }
+    .revudio-letter-rating-small {
+        float: left;
+        color: #ff0909;
+        line-height: 95%;
+    }
+    .revudio-company-block-top-reviews-small {
+        height: 20px;
+        padding: 0;
+        margin-bottom: 1px;
+        font-size: 12px;
+        font-family: Arial;
+        color: #3c3c3c;
+        font-weight: bold;
+    }
+    .revudio-company-block-top-rating-small {
+        height: 17px;
+        padding: 0;
+        font-size: 12px;
+        font-weight: normal;
+        overflow: hidden;
+    }
+    .revudio-star-rating-small {
+        float: left;
+        margin-right: 5px;
+    }
+    .revudio-star-rating-small img{
+        float: left;
+    }
+</style>
+<div class="revudio-company-block-small">
+    <div class="revudio-company-block-top-small">
+        <div class="revudio-company-block-title-small">
+            <?php echo $this->company->name; ?>
+        </div>
+        <div class="revudio-company-block-top-left-small">
+            <img alt="Reviews For <?php echo $this->company->name ?>" title="Reviews For <?php echo $this->company->name ?>" src="<?php echo $this->serverUrl(); ?>/images/banner/icon.png">
+        </div>
+        <div class="revudio-company-block-top-right-small">
+            <div class="revudio-company-block-top-reviews-small">
+                <?php echo $this->company->review_count; ?> Customer Reviews
+            </div>
+            <div class="revudio-company-block-top-rating-small">
+                <div class="revudio-star-rating-small" id="revudio-company-rating-small">
+                    <?php for ($i = 0; $i < 5; $i++): ?>
+                        <?php
+                        $star = "off";
+
+                        if ($this->ratings["star"]->getRating() >= $i + 1) {
+                            $star = "on";
+                        }
+                        ?>
+
+                        <img src="<?php echo $this->serverUrl(); ?>/images/banner/stars/star-<?php echo $star; ?>.png" alt="<?php echo $i + 1; ?>" title="<?php echo $i + 1; ?>">
+                    <?php endfor; ?>
+                </div>
+
+                <div class="revudio-letter-rating-small">
+                    <?php echo $this->ratings['percent']->getRating(); ?>%
+                    <?php echo $this->ratings['letter']->getRating() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

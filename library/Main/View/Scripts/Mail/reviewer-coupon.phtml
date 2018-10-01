@@ -1,0 +1,33 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    Congratulations, you have received a Discount Coupon for your next purchase or service.
+    We appreciate the time in leaving us a review and appreciate the business.
+    Feel free to contact us if you have any questions and hope to see you soon.
+</p>
+
+<p>
+    <img src="<?php echo $this->imgSrc; ?>">
+</p>
+
+<?php
+    $links = "";
+
+    if ($this->links) {
+        $links = array();
+
+        foreach ($this->links as $link) {
+            $links[] = '<a href="' . $link[1] . '">' . $link[0] . '</a>';
+        }
+
+        $links = implode(", ", $links);
+    }
+?>
+
+<?php if ($links): ?>
+<p>
+    Join us on <?php echo $links; ?>.
+</p>
+<?php endif; ?>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

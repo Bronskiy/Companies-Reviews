@@ -1,0 +1,52 @@
+<div class="wrapper">
+    <div class="buttons">
+        <div class="float-right">
+            <select class="review-status-filter" onchange="paymentsMonth($(this).val());">
+                <option value="all">All</option>
+
+                <?php foreach ($this->months as $month): ?>
+                    <option value="<?php echo $month["value"]; ?>" <?php if ($month["value"] == $this->month) echo "selected"; ?>><?php echo $month["text"]; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?>: $<?php echo sprintf("%.2f", $this->total); ?></h1>
+    <hr>
+</div>
+
+<?php if (count($this->paginator)): ?>
+    <table class="table payment-list">
+        <th class="date">Date</th>
+        <th class="company">Company</th>
+        <th class="plan">Plan</th>
+        <th class="amount">Amount</th>
+        <th class="discount">Discount</th>
+
+        <?php foreach($this->paginator as $payment): ?>
+            <tr>
+                <td class="date"><?php echo $this->dateFormat()->formatFromString($payment->created_at, 'm/d/Y'); ?></td>
+                <td class="company">
+                    <a href="<?php echo $this->url("admin_company_edit", array("id" => $payment->company_id)); ?>"><?php echo $payment->Company->name; ?></a>
+                </td>
+                <td class="plan"><?php echo $payment->plan; ?></td>
+                <td class="amount">$<?php echo $payment->amount; ?></td>
+                <td class="discount">$<?php echo $payment->discount; ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination.phtml',
+                array(
+                    'route' => 'admin_payments_page'
+                )
+            );
+    ?>
+<?php else: ?>
+    No payments to display.
+<?php endif; ?>

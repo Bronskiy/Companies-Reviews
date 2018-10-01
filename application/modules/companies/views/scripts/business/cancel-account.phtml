@@ -1,0 +1,13 @@
+<h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+<hr>
+
+<p><b>Warning!</b> This action is irreversible! Are you sure you want to proceed?</p>
+
+<form method="post" action="<?php echo $this->url('business_cancel_account'); ?>">
+    <?php
+        echo $this->csrfForm(array(
+            'postfix' => 'cancel',
+            'submitLabel' => 'Proceed'
+        ));
+    ?>
+</form>

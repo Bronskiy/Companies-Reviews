@@ -1,0 +1,11 @@
+<?php
+    echo $this->partial("form.phtml", array(
+        'form'   => $this->loginForm,
+        'action' => $this->url('login'),
+        'button' => 'Login',
+        'extraButton' => array(
+            'label' => 'Restore Password',
+            'url' => $this->url('restore')
+        )
+    ));
+?>

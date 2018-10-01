@@ -1,0 +1,16 @@
+<script type="text/javascript">
+    if (window["_revudio"] == undefined) {
+        window["_revudio"] = [];
+
+        (function() {
+            var newScript = document.createElement("script");
+            newScript.type = "text/javascript";
+            newScript.src = "<?php echo $this->serverUrl(); ?>/js/service/banner.js";
+            var script = document.getElementsByTagName("script")[0];
+            script.parentNode.insertBefore(newScript, script);
+        })();
+    }
+
+    _revudio.push({company: <?php echo $this->company->id; ?>, domain: "<?php echo $this->serverUrl(); ?>", style: "<?php echo $this->style; ?>"});
+</script>
+<a href="<?php echo $this->serverUrl() . $this->urlGenerator()->companyUrl($this->company); ?>" id="revudio-company-<?php echo $this->company->id; ?>-<?php echo $this->style; ?>" target="_blank"><?php echo $this->escape($this->company->name); ?></a>

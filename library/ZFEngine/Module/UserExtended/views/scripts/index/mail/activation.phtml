@@ -1,0 +1,26 @@
+<p>
+    <?php echo $this->translate('Здравствуйте!'); ?>
+</p>
+<p>
+    <?php echo sprintf($this->translate('Кто-то (надеемся, что это вы) зарегистрировался на сайте %s, указав этот e-mail.'), $_SERVER['HTTP_HOST']); ?>
+</p>
+<p>
+    <?php echo $this->translate('Для подтверждения  вашего e-mail пройдите, пожалуйста по указанной ссылке:'); ?>
+    <a href="<?php $url = $this->serverUrl() . $this->url(array('module' => 'users', 'controller' => 'index',
+                                         'action' => 'activation',
+                                         'email' => $this->user->email,
+                                         'code' => $this->user->activation_code),
+                                   'default', true); echo $url; ?>">
+       <?php echo $url; ?>
+    </a>
+</p>
+<p>
+    <?php echo $this->translate('Если же вы не регистрировались на сайте, просто проигнорируйте это  письмо – больше мы вас не побеспокоим.'); ?>
+</p>
+<p></p>
+<p>
+    <?php echo $this->translate('С уважением,'); ?>
+</p>
+<p>
+    <?php echo $this->translate('команда ') . $_SERVER['HTTP_HOST']; ?>
+</p>

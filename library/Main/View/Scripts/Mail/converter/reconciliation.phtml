@@ -1,0 +1,13 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    You've received a bad review from
+    <?php echo $this->review->client_name; ?> (<?php echo $this->review->mail; ?>).
+
+    If you successfully resolved the issue, please ask your customer to
+    <a href="<?php echo 'http://' . $this->config()->getDomain() . $this->url('business_req_change_review', array('id' => $this->review->id )); ?>">
+        change the review
+    </a>.
+</p>
+
+<?php echo $this->render("partial/header.phtml"); ?>

@@ -1,0 +1,22 @@
+<h2><?php echo $this->page->title; ?></h2>
+<?php if ($this->IsAllowed('mvc:pages:index', 'edit') &&
+          $this->IsAllowed('mvc:pages:index', 'delete')): ?>
+    <div class="action">
+        <a href="<?php echo $this->url(array(
+                'module' => 'pages',
+                'controller'=>'index',
+                'action'=>'edit',
+                'id'=>$this->page->id
+            ), 'default', true); ?>"><?php echo $this->translate('Редактировать'); ?></a>
+        <a href="<?php echo $this->url(array(
+                'module' => 'pages',
+                'controller'=>'index',
+                'action'=>'delete',
+                'id'=>$this->page->id
+            ), 'default', true); ?>"><?php echo $this->translate('Удалить'); ?></a>
+    </div>
+<?php endif; ?>
+
+<div>
+    <?php echo $this->page->content; ?>
+</div>

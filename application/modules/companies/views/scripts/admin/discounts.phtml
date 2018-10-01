@@ -1,0 +1,41 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a href="<?php echo $this->url('admin_discount_add');?>" class="btn">Add Discount</a>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if (count($this->paginator)) :?>
+    <ul class="discount-list">
+        <?php foreach ($this->paginator as $discount): ?>
+            <li>
+                <a href="<?php echo $this->url('admin_discount_edit', array('id' => $discount->id)); ?>"><?php echo $discount->code; ?></a>
+                <a class="close-small" href="#delete" title="Delete" onclick="if (!confirm('Please Confirm Discount Deletion to Continue!')) { return false;} $('#delete-discount-<?php echo $discount->id; ?>').submit();">&times;</a>
+
+                <?php
+                    echo $this->csrfForm(array(
+                        'id' => 'delete-discount-' . $discount->id,
+                        'class' => 'hide',
+                        'action' => $this->url('admin_discount_delete', array('id' => $discount->id)),
+                        'postfix' => $discount->id . 'del',
+                        'submitLabel' => 'Delete',
+                    ));
+                ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+ <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination.phtml',
+                array( 'route' => 'admin_discounts_page' )
+            );
+        }
+    ?>
+<?php else: ?>
+    No discounts to display.
+<?php endif; ?>

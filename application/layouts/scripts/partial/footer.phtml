@@ -1,0 +1,55 @@
+<div id="footer_bg">
+    <div class="wrapper">
+        <div class="footer_nav">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#">About</a></li>
+
+                <?php if (!Zend_Auth::getInstance()->hasIdentity()): ?>
+                    <li><a href="<?php echo $this->url('login'); ?>">Login</a></li>
+                    <li><a href="<?php echo $this->url('signup'); ?>">Sign Up</a></li>
+                <?php endif; ?>
+
+                <li><a href="#">Partner Program</a></li>
+                <li><a href="#">How It Works</a></li>
+                <li><a href="<?php echo $this->url('companies'); ?>">Companies</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer_botm">
+            <div class="footer_left">
+                &copy; <?php echo date('Y'); ?> <a href="/">Revudio</a> |
+                <a href="<?php echo $this->url('static_privacy'); ?>">Privacy Policy</a> |
+                <a href="<?php echo $this->url('static_terms'); ?>">Terms & Conditions</a>
+            </div>
+            <div class="footer_right"><a href="#"><img src="/images/footer_logo.png" alt="" title="Home" /></a></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-41257062-1', 'revudio.com');
+    ga('send', 'pageview');
+</script>
+
+<!-- Piwik
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://piwik.bizlocate.net//";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+
+</script>
+<noscript><p><img src="//piwik.bizlocate.net/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+
+ End Piwik Code -->

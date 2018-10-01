@@ -1,0 +1,58 @@
+<h1>
+    <?php echo $this->title; ?>
+</h1>
+<?php if ($this->IsAllowed('mvc:pages:index', 'new')): ?>
+    <div class="button-new" >
+        <a href="<?php echo $this->url(array(
+                'module'=>'pages',
+                'controller'=>'index',
+                'action'=>'new'
+           ), 'default', true); ?>">
+           <?php echo $this->translate('Создать страницу'); ?>
+        </a>
+    </div>
+<?php endif; ?>
+
+<?php if ($this->paginator->count()): ?>
+    <table class="pages-container grid" align="center">
+        <thead>
+            <th><?php echo $this->translate('Заголовок'); ?></th>
+            <th><?php echo $this->translate('Действие'); ?></th>
+        </thead>
+        <tbody>
+        <?php foreach ($this->paginator as $page): ?>
+                <tr>
+                    <td>
+                        <a href="<?php echo $this->url(array(
+                                     'alias' => $page->alias
+                                ), 'pages-view', true); ?>">
+                            <?php echo $this->escape($page->title); ?>
+                        </a>
+                    </td>
+                    <td>
+                    <?php if ($this->IsAllowed('mvc:pages:index', 'edit') &&
+                        $this->IsAllowed('mvc:pages:index', 'delete')): ?>
+                        <a class="page-edit" href="<?php echo $this->url(array(
+                                    'module' => 'pages',
+                                    'controller'=>'index',
+                                    'action'=>'edit',
+                                    'id'=>$page->id
+                                ), 'default', true); ?>"><?php echo $this->translate('Редактировать'); ?></a>
+                        <a class="page-delete" href="<?php echo $this->url(array(
+                                    'module' => 'pages',
+                                    'controller'=>'index',
+                                    'action'=>'delete',
+                                    'id'=>$page->id
+                                ), 'default', true); ?>"><?php echo $this->translate('Удалить'); ?>
+                        </a>
+                    <?php endif; ?>
+                    </td>
+                </tr>
+        <?php endforeach; ?>
+
+        </tbody>
+    </table>
+    <?php echo $this->paginator; ?>
+<?php else: ?>
+    <?php echo $this->infoMessage($this->translate('Страницы отсутствуют.')); ?>
+<?php endif; ?>

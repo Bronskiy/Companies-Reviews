@@ -1,0 +1,61 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a class="btn" href="<?php echo $this->url("admin_company_article_add", array("id" => $this->company->id)); ?>">Add Article</a>
+        <?php echo $this->partial("admin/partial/company-menu.phtml", array("company" => $this->company)); ?>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if ($this->paginator && count($this->paginator)): ?>
+    <ul class="article-list">
+        <?php foreach ($this->paginator as $article): ?>
+            <li>
+                <div>
+                    <div class="pull-right">
+                        <a class="close-small" href="#delete" title="Delete" onclick="if (!confirm('Please Confirm Article Deletion to Continue!')) {return false;} $('#delete-article-<?php echo $article->id; ?>').submit();">&times;</a>
+                    </div>
+
+                    <a href="<?php echo $this->url("admin_company_article", array("id" => $this->company->id, "articleId" => $article->id)); ?>">
+                        <?php echo $this->escape($article->title); ?>
+                    </a>
+
+                    <div class="info">
+                        <span class="label"><?php echo $this->dateFormat()->formatFromString($article->created_at); ?></span>
+                    </div>
+
+                    <div>
+                        <?php echo $this->escape($article->intro); ?>
+                    </div>
+
+                    <?php
+                        echo $this->csrfForm(array(
+                            "id" => "delete-article-" . $article->id,
+                            "class" => "hide",
+                            "action" => $this->url("admin_company_article_delete", array("id" => $this->company->id, "articleId" => $article->id)),
+                            "postfix" => $article->id,
+                            "submitLabel" => "Delete",
+                        ));
+                    ?>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                "Sliding",
+                "pagination/digg_pagination_company.phtml",
+                array(
+                    "route" => "admin_company_articles_page",
+                    "id" => $this->company->id,
+                )
+            );
+        }
+    ?>
+<?php else: ?>
+    No articles to display.
+<?php endif; ?>

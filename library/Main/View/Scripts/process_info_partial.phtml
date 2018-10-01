@@ -1,0 +1,17 @@
+<?php if (!empty($this->data) && is_array($this->data)): ?>
+    <div class="wrapper">
+        <div class="alert <?php echo $this->class; ?>">
+            <a class="close" data-dismiss="alert" href="#">&times;</a>
+
+            <?php if (count($this->data) > 1): ?>
+                <ul>
+                    <?php foreach ($this->data as $info): ?>
+                        <li><?php echo $info; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <?php echo $this->data[0]; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,204 @@
+<div class="wrapper">
+    <div class="buttons">
+        <?php echo $this->partial("admin/partial/company-menu.phtml", array('company' => $this->company)); ?>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<div class="profile-sidebar">
+    <button class="btn" onclick="googleMap.geocode();">Detect Location Automatically</button>
+    <br><br>
+
+    <div id="company-map" class="map"></div>
+</div>
+
+
+<?php
+    echo $this->csrfForm(array(
+        'id' => "delete-logo-form",
+        'style' => "display:none;",
+        'action' => $this->url('admin_company_logo_delete', array( 'id' => $this->company->id )),
+        'postfix' => "deletelogo"
+    ));
+?>
+
+<?php $aboutVideo = Companies_Model_CompanyVideoTable::getInstance()->getAboutUs($this->company->id); ?>
+
+<form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->url('admin_company_edit', array( 'id' => $this->company->id )); ?>">
+    <fieldset>
+        <?php echo $this->companyForm->csrf_token; ?>
+        <?php echo $this->companyForm->latitude; ?>
+        <?php echo $this->companyForm->longitude; ?>
+
+        <?php
+            foreach ($this->companyForm->getElements() as $element):
+                $skipElement = false;
+
+                if (in_array($element->getName(), array( 'csrf_token', 'latitude', 'longitude' )))
+                    continue;
+        ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                    <?php if ($element->getName() == 'video' && $aboutVideo->exists()): ?>
+                        <?php if ($aboutVideo->status == Companies_Model_CompanyVideo::STATUS_PROCESSED): ?>
+                            <?php
+                                $dirsGenerator = new Main_Service_Dir_Generator_Company($this->company);
+                                $dirs = $dirsGenerator->getFoldersPathsFromRule(false);
+                            ?>
+
+                            <a href="#company-player" id="company-video">
+                                <div style="background:url('<?php echo $this->getPath($dirs, 'videos', $aboutVideo->name) . ".jpg"; ?>') no-repeat center center;background-size:cover;width:100px;height:100px;text-align:center;">
+                                    <img src="<?php echo $this->serverUrl()?>/images/button_play.png" style="margin-top:20px;"/>
+                                </div>
+                            </a>
+
+                            <div>
+                                <a href="<?php echo $this->url('admin_delete_video', array('id' => $this->company->id)); ?>">
+                                    Delete video
+                                </a>
+                            </div>
+
+                            <div class="hide">
+                                <div style="width:800px;" class="is-splash is-paused" id="company-player">
+                                </div>
+                            </div>
+
+                            <script type="text/javascript">
+                                $(function() {
+                                    $("#company-player").flowplayer({
+                                        playlist: [[<?php echo $this->videoStreams($dirs, 'videos', $aboutVideo); ?>]],
+                                        swf: '/js/flowplayer/flowplayer.swf',
+                                        engine: 'html5',
+                                        preload: false
+                                    });
+                                });
+                            </script>
+                        <?php else: ?>
+                            <?php $skipElement = true; ?>
+                            <span class="help-block">
+                                Processing video, please wait...
+                            </span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php
+                        if ($element->getName() == 'logo' && $this->company->logo):
+                            $logoPath = $this->getPath($this->companyDirs, 'images', $this->company->logo);
+                    ?>
+                        <button class="btn" onclick="$('#delete-logo-form').submit(); return false;">Delete</button><br>
+                        <img class="profile-logo" src="<?php echo $logoPath; ?><?php if ($this->updated) echo '?' . time(); ?>">
+
+                        <hr>
+                    <?php endif; ?>
+
+                    <?php if (!$skipElement): ?>
+                        <?php echo $element; ?>
+
+                        <?php if ($element->getMessages()): ?>
+                            <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Save</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<hr>
+
+<h3>Business Photos</h3>
+
+<form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->url('admin_company_image_add', array( 'id' => $this->company->id )); ?>">
+    <fieldset>
+        <?php foreach ($this->imageForm->getElements() as $element): ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $element; ?>
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Upload</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<?php if (count($this->companyImages)): ?>
+    <hr>
+    <div class="company-gallery">
+        <ul>
+            <?php foreach($this->companyImages as $image):?>
+                <li>
+                    <?php
+                        echo $this->csrfForm(array(
+                            'id'        => 'delete-image-' . $image->id,
+                            'class'     => 'hide',
+                            'action'    => $this->url('admin_company_image_delete', array(
+                                'id'    => $this->company->id,
+                                'image' => $image->id
+                            )),
+                            'postfix'     => $image->id,
+                            'submitLabel' => 'Delete'
+                        ));
+                    ?>
+
+                    <?php
+                        $pathBig = $this->getPath($this->companyDirs, 'gallery', $image->name . "." . $image->extension);
+                        $pathSmall = $this->getPath($this->companyDirs, 'gallery', $image->name . "-small." . $image->extension);
+                    ?>
+
+                    <a class="close" href="#delete" title="Delete" onclick="$('#delete-image-<?php echo $image->id; ?>').submit();">&times;</a>
+                    <a rel="company_gallery" class="fancybox" href="<?php echo $pathBig; ?>"><img src="<?php echo $pathSmall; ?>"></a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
+<script>
+    // images
+    $('.fancybox').fancybox();
+</script>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $this->config()->google->maps->key; ?>&sensor=false"></script>
+
+<script type="text/javascript">
+    $(function() {
+        // videos
+        $('#company-video').fancybox({
+            afterShow : function () {
+                $('#company-player').data('flowplayer').load();
+            },
+
+            afterClose : function () {
+                $('#company-player').data('flowplayer').unload();
+            }
+        });
+
+        initMap(
+            <?php echo !empty($this->company->latitude) ? $this->company->latitude :  $this->config()->google->maps->latitude; ?>,
+            <?php echo !empty($this->company->longitude) ? $this->company->longitude :  $this->config()->google->maps->logitude;  ?>,
+            '<?php echo $this->company->name; ?>',
+            '<?php echo $this->config()->google->maps->marker->icon; ?>'
+        );
+
+        onLocalBusinessCheckboxChange();
+    });
+</script>

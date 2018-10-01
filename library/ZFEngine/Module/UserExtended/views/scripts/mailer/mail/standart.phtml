@@ -1,0 +1,16 @@
+<p>
+    <?php echo $this->translate('Здравствуйте, %username%!'); ?>
+</p>
+<p>
+    <?php echo $this->translate('Вами получено сообщение от администрации сайта:'); ?>
+    <a href="<?php echo $this->serverUrl(); ?>"><?php echo $this->serverUrl(); ?></a>
+</p>
+<p>
+    <?php echo $this->body; ?>
+</p>
+<p>
+    <?php echo $this->translate('С уважением,'); ?>
+</p>
+<p>
+    <?php echo $this->translate('команда ') . $this->serverUrl(); ?>
+</p>

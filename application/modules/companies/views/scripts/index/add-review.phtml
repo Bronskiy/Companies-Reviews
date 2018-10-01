@@ -1,0 +1,111 @@
+<a href="<?php echo ($this->company->uri);?>">&lt;&lt; Back to Company Profile</a>
+<br><br>
+
+<?php
+    $dirsGenerator = new Main_Service_Dir_Generator_Company($this->company);
+    $companyDirsRel = $dirsGenerator->getFoldersPathsFromRule(false);
+?>
+
+<form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->urlGenerator()->companyReviewAddUrl($this->company); ?>">
+    <fieldset>
+        <?php echo $this->reviewForm->csrf_token; ?>
+
+        <?php
+            foreach ($this->reviewForm->getElements() as $element):
+                if ($element->getName() == 'csrf_token')
+                    continue;
+        ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                    <?php if ($element->getName() == 'rating'): ?>
+                        <div style="color:red;font-weight:bold;margin-top:5px;margin-bottom:10px;">
+                            Please don't forget to select the stars for rating!
+                        </div>
+
+                        <div id="leave-review-star"></div>
+                        <div class="leave-review-star-description">awful (0%)</div>
+                    <?php elseif ($element->getName() == "employee_id"): ?>
+                        <div class="employee-selector">
+                            <div class="employee-photo">
+                                <img src="/images/employee.png">
+                            </div>
+                            <div class="employee-info">
+                                Not Specified
+                            </div>
+                        </div>
+
+                        <a class="btn" href="#employee-selector" data-toggle="modal" data-target="#employee-selector">Select</a>
+                    <?php endif; ?>
+
+                    <?php echo $element; ?>
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php elseif ($element->getDescription()): ?>
+                        <span class="help-block"><?php echo $element->getDescription(); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn" onclick="return checkRatingUpdated();">Send</button>
+                &nbsp;or&nbsp;
+                <a href="<?php echo $this->urlGenerator()->companyUrl($this->company); ?>">Go Back</a>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<div id="employee-selector" class="modal hide fade" role="dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Select Employee</h3>
+    </div>
+    <div class="modal-body">
+        <?php if ($this->employees->Count() > 0): ?>
+            <div class="employee-container">
+                <?php
+                    foreach ($this->employees as $employee):
+                        if ($employee->photo) {
+                            $path = $this->getPath($companyDirsRel, 'employees', $employee->photo);
+                        } else {
+                            $path = "/images/employee.png";
+                        }
+                ?>
+                    <div class="company-employee" onclick="selectEmployee(<?php echo $employee->id; ?>);" data-id="<?php echo $employee->id; ?>" data-photo="<?php echo $path; ?>" data-name="<?php echo $this->escape($employee->name); ?>" data-position="<?php echo $this->escape($employee->position); ?>">
+                        <div class="employee-photo">
+                            <img src="<?php echo $path; ?>">
+                        </div>
+
+                        <div class="employee-info">
+                            <b><?php echo $this->escape($employee->name); ?></b>
+
+                            <?php if ($employee->position): ?>
+                                <br>
+                                <i><?php echo $this->escape($employee->position); ?></i>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            No employees to display.
+        <?php endif; ?>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn" onclick="selectEmployee(0);">Not Specified</button>
+    </div>
+</div>
+
+<?php
+    echo $this->ratyScript(array(
+        'element' => '#leave-review-star',
+        'score' => $this->reviewForm->getValue('rating') ? $this->reviewForm->getValue('rating') : 0,
+        'click' => "function (score, evt) { $('#rating').val(score); updateRatingDescription(score); }",
+        'half' => true,
+    ))->render();
+?>

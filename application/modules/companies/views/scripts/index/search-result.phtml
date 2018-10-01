@@ -1,0 +1,60 @@
+<p>
+    Showing search results for <b><?php echo $this->escape($this->query); ?></b>.
+    <a href="<?php echo $this->url('search'); ?>">Perform another search</a>.
+</p>
+
+<?php if ($this->paginator != null && count($this->paginator)): ?>
+    <ul class="company-list">
+        <?php foreach($this->paginator as $company): ?>
+            <?php
+                $ratings = $this->ratings()->getAllRatings($company->rating);
+                $starRatingId = 'company-star-' . $company->id;
+            ?>
+            <li>
+                <a href="<?php echo $company->uri; ?>">
+                    <?php echo $this->escape($company->name); ?>
+                    <?php if ($company->local_business): ?>
+                        <?php echo $this->escape($company->city); ?>, <?php echo $this->escape($company->state); ?>
+                    <?php endif; ?>
+                </a>
+
+                <div class="rating">
+                    <div id="<?php echo $starRatingId; ?>" class="star-rating"></div>
+
+                    <div class="text-rating">
+                        <span>
+                            <?php echo $ratings['percent']->getRating(); ?>%
+                            <?php echo $ratings['letter']->getRating() ?>
+                        </span>
+                    </div>
+
+                    <?php
+                        echo $this->ratyScript(array(
+                            'element'  => "#$starRatingId",
+                            'readOnly' => true,
+                            'score'    => $ratings['star']->getRating(),
+                        ))->render();
+                    ?>
+                </div>
+
+                <div class="reviews">
+                    <?php echo $company->review_count; ?> reviews
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination.phtml',
+                array( 'route' => 'search_results_page' )
+            );
+    ?>
+<?php else: ?>
+    <p>
+        No companies found.
+    </p>
+<?php endif; ?>

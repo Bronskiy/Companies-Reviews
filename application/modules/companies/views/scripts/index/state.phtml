@@ -1,0 +1,10 @@
+<?php if(!empty($this->cities)): ?>
+    <?php foreach($this->cities as $aCity): ?>
+        <li><a href="<?php echo $this->url('state_city', array( 'state' => $this->state, 'city' => $this->stringToUri($aCity['c_city']) )); ?>">
+                <?php echo $this->escape($aCity['c_city']); ?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+<?php else: ?>
+    No cities in this state.
+<?php endif; ?>

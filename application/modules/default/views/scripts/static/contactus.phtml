@@ -1,0 +1,33 @@
+<style>
+    input[type=text]{
+        width:280px
+    }
+
+    textarea{
+        width:280px;
+        height:150px;
+    }
+
+    dt{float:left;}
+
+    dd {
+        margin-left: 130px;
+    }
+
+    table tr:last-child {
+       display: none;
+    }
+</style>
+
+<?php if ($this->sentemail) {?>
+    <div class="wrapper">
+        <div class="alert SUCCESS alert-success">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            Message sent
+        </div>
+    </div>
+<?php }?>
+
+<?php  echo $this->form; ?>
+
+

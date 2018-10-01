@@ -1,0 +1,9 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    The credit card of <a href="<?php echo $this->companyLink; ?>"><?php echo $this->company->name; ?></a> is about to
+    expire. Please ask the company owner to change their credit card details to avoid unnecessary service interruption
+    because of subscription expiration.
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

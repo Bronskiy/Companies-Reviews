@@ -1,0 +1,25 @@
+<div class="btn-group">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        Edit
+        <span class="caret"></span>
+    </a>
+
+    <ul class="dropdown-menu">
+        <li><a href="<?php echo $this->url("admin_company_edit", array("id" => $this->company->id)); ?>">Profile</a></li>
+        <li><a href="<?php echo $this->url("admin_company_reviews", array("id" => $this->company->id)); ?>">Reviews</a></li>
+        <li><a href="<?php echo $this->url("admin_company_employees", array("id" => $this->company->id)); ?>">Employees</a></li>
+        <li><a href="<?php echo $this->url("admin_company_articles", array("id" => $this->company->id)); ?>">Articles</a></li>
+        <li><a href="<?php echo $this->url("admin_company_coupon", array("id" => $this->company->id)); ?>">Coupon</a></li>
+        <li><a href="<?php echo $this->url("admin_company_promos", array("id" => $this->company->id)); ?>">Promos</a></li>
+        <li><a href="<?php echo $this->url("admin_company_banners", array("id" => $this->company->id)); ?>">Banners</a></li>
+
+        <li class="divider"></li>
+
+        <?php if (Main_Service_Models::getAuthUser()->Role->name == Users_Model_Role::ADMIN_ROLE): ?>
+            <li><a href="<?php echo $this->url("admin_company_billing", array("id" => $this->company->id)); ?>">Billing</a></li>
+            <li><a href="<?php echo $this->url("admin_company_payments", array("id" => $this->company->id)); ?>">Payments</a></li>
+        <?php endif; ?>
+
+        <li><a href="<?php echo $this->url("admin_company_users", array("id" => $this->company->id)); ?>">Users</a></li>
+    </ul>
+</div>

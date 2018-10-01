@@ -1,0 +1,53 @@
+Companies_Model_Employee:
+  tableName: company_employees
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      notnull: true
+      autoincrement: true
+    company_id:
+      type: integer(4)
+      notnull: true
+    name:
+      type: string(1000)
+      notnull: true
+    position:
+      type: string(1000)
+      default: null
+    sorting_position:
+      type: integer(4)
+      notnull: true
+      default: 0
+    photo:
+      type: string(1000)
+      default: null
+    public_profile:
+      type: integer(1)
+      unsigned: true
+      notnull: true
+      default: 0
+    year_started:
+      type: integer(4)
+    about:
+      type: clob(65535)
+    facebook_link:
+      type: string(1000)
+    twitter_link:
+      type: string(1000)
+    linkedin_link:
+      type: string(1000)
+    google_link:
+      type: string(1000)
+  relations:
+    Company:
+      class: Companies_Model_Company
+      local: company_id
+      foreign: id
+      foreignAlias: Employees
+      onDelete: cascade
+      onUpdate: cascade

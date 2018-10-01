@@ -1,0 +1,47 @@
+<div class="wrapper">
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if (!empty($this->paginator) && count($this->paginator)): ?>
+    <ul class="user-list">
+        <?php foreach($this->paginator as $user):?>
+            <li>
+                <div>
+                    <a href="<?php echo $this->url('admin_user_edit', array( 'id' => $user->id )); ?>">
+                        <?php echo $user->mail; ?>
+                    </a>
+
+                    <a class="close-small" href="#delete" title="Delete" onclick="if (! confirm ('Please Confirm User Deletion to Continue!')) { return false;} $('#delete-user-<?php echo $user->id; ?>').submit();">&times;</a>
+
+                    <?php
+                        echo $this->csrfForm(array(
+                            "id" => "delete-user-" . $user->id,
+                            "class" => "hide",
+                            "action" => $this->url("admin_user_delete", array( "id" => $user->id )),
+                            "postfix" => $user->id,
+                            "submitLabel" => "Delete",
+                        ));
+                    ?>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                "Sliding",
+                "pagination/digg_pagination.phtml",
+                array(
+                    "route" => "admin_company_users_page",
+                    "params" => array(
+                        "id" => $this->companyId,
+                    )
+                )
+            );
+    ?>
+<?php else: ?>
+    No users to display.
+<?php endif; ?>

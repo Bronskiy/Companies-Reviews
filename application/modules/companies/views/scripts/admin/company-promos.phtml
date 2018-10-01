@@ -1,0 +1,36 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a class="btn" href="<?php echo $this->url('admin_add_promo', array('companyId' => $this->companyId)); ?>">Add Promo</a>
+        <?php echo $this->partial("admin/partial/company-menu.phtml", array('company' => $this->company)); ?>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if (count($this->paginator)): ?>
+    <ul class="promo-list">
+        <?php foreach($this->paginator as $promo): ?>
+            <li>
+                <a href="<?php echo $this->url('admin_company_promo', array('id' => $this->companyId, 'promoId' => $promo->id )); ?>">
+                    <?php echo $promo->title; ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination_id.phtml',
+                array(
+                    'id'    => $this->companyId,
+                    'route' => 'admin_companies_promos_page'
+                )
+            );
+    ?>
+<?php else: ?>
+    No promos to display.
+<?php endif; ?>

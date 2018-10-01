@@ -1,0 +1,45 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    You can also go back and <a href="<?php echo $this->addVideoLink; ?>">add a video review</a> to
+    the profile during a one week period. This helps enhance the profile and you will receive an extra
+    bonus discount on your next visit or purchase.
+</p>
+
+<?php if ($this->company->review_email_text): ?>
+    <p>
+        <?= $this->company->review_email_text; ?>
+    </p>
+<?php endif; ?>
+
+<?php if ($this->company->google_link || $this->company->yelp_link): ?>
+    <p>
+        Please leave a review in our social network profiles:<br>
+
+        <table border="0">
+            <?php if ($this->company->google_link): ?>
+                <tr>
+                    <td>
+                        <img src="http://<?= $this->domain; ?>/images/icons/company-google+.png" width="16" height="16"/>
+                    </td>
+                    <td>
+                        <?= $this->company->google_link; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+
+            <?php if ($this->company->yelp_link): ?>
+                <tr>
+                    <td>
+                        <img src="http://<?= $this->domain; ?>/images/icons/company-yelp.png" width="16" height="16"/>
+                    </td>
+                    <td>
+                        <?= $this->company->yelp_link; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        </table>
+    </p>
+<?php endif; ?>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

@@ -1,0 +1,36 @@
+<p>
+    We've sent you an email with a company code - please enter this code in the form below.<br>
+    If you don't receive the message within a few minutes, please check your spam folder.
+</p>
+<form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->urlGenerator()->companyReviewConfirmUrl($this->review->Company, $this->review); ?>">
+    <fieldset>
+        <?php echo $this->form->csrf_token; ?>
+
+        <?php
+            foreach ($this->form->getElements() as $element):
+                if ($element->getName() == 'csrf_token')
+                    continue;
+        ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                    <?php if ($element->getName() == 'rating'): ?>
+                        <div id="leave-review-star"></div>
+                    <?php endif; ?>
+
+                    <?php echo $element; ?>
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Send</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

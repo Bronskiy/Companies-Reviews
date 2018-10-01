@@ -1,0 +1,26 @@
+Companies_Model_Coupon:
+  tableName: coupons
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      notnull: true
+      autoincrement: true
+    image:
+      type: string(100)
+      notnull: true
+    company_id:
+      type: integer(4)
+      notnull: true
+  relations:
+    Company:
+      class: Companies_Model_Company
+      local: company_id
+      foreign: id
+      foreignAlias: Coupons
+      onDelete: cascade
+      onUpdate: cascade

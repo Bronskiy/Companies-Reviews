@@ -1,0 +1,53 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a class="btn" href="<?php echo $this->url("business_employee_reviews", array("id" => $this->employee->id)); ?>">Reviews</a>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if ($this->employee->photo): ?>
+    <?php echo $this->csrfForm(array(
+        'id' => "delete-photo-form",
+        'style' => "display:none;",
+        'action' => $this->url('business_employee_delete_photo', array('id' => $this->employee->id)),
+        'postfix' => $this->employee->id,
+    )); ?>
+<?php endif; ?>
+
+<?php
+    $dirsGenerator = new Main_Service_Dir_Generator_Company($this->employee->Company);
+    $dirs = $dirsGenerator->getFoldersPathsFromRule(false);
+    $photoPath = $this->getPath($dirs, 'employees', $this->employee->photo);
+?>
+
+<form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->form->getAction(); ?>">
+    <fieldset>
+        <?php foreach ($this->form->getElements() as $element): ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); $element->setLabel(''); ?></label>
+                <div class="controls">
+                    <?php if ($element->getName() == 'photo' && $this->employee->photo): ?>
+                        <button class="btn" onclick="$('#delete-photo-form').submit(); return false;">Delete</button><br><br>
+                        <img class="coupon" src="<?php echo $photoPath; ?>">
+
+                        <hr>
+                    <?php endif; ?>
+
+                    <?php echo $element; ?>
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" name="save_promo" class="btn">Save</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

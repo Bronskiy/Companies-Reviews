@@ -1,0 +1,56 @@
+<div id="container">
+    <div class="wrapper">
+        <div class="top_area">
+            <div class="logo"><a title="Revudio" href="/"><img src="/images/logo.png" alt="Logo" title="Home" /></a></div>
+            <div class="header_right">
+                <div class="hedr_top">
+                    <?php if (Zend_Auth::getInstance()->hasIdentity()): ?>
+                        <a title="Logout" href="<?php echo $this->url('logout'); ?>">Logout</a>
+                    <?php else: ?>
+                        <a title="Sign Up" href="<?php echo $this->url('signup'); ?>">Sign Up</a>
+                        <a title="Login" href="<?php echo $this->url('login'); ?>">Login</a>
+                    <?php endif; ?>
+
+                    <a title="Contact Us" href="<?php echo $this->url('static_contactus'); ?>">Contact Us</a>
+                    <a title="About Us" href="#">About Us</a>
+
+                    <?php if (Zend_Auth::getInstance()->hasIdentity()): ?>
+                        <?php if (in_array(Main_Service_Models::getAuthUser()->Role->name, array(Users_Model_Role::ADMIN_ROLE, Users_Model_Role::SUBADMIN_ROLE))): ?>
+                            <a title="Admin" class="bold-link" href="<?php echo $this->url("admin_reviews"); ?>">Admin</a>
+                        <?php elseif (Main_Service_Models::getAuthUser()->Role->name == Users_Model_Role::MEMBER_ROLE): ?>
+                            <a title="Business" class="bold-link" href="<?php echo $this->url("business_reviews"); ?>">Business</a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+
+                <div class="search">
+                    <?php
+                        $module = Zend_Controller_Front::getInstance()->getRequest()->getModuleName();
+                        $controller = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+                        $action = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+                        $searchQuery = null;
+
+                        if ($module == 'companies' && $controller == 'index') {
+                            $view = Zend_Layout::getMvcInstance()->getView();
+
+                            if ($action == 'search') {
+                                $searchQuery = $view->searchForm->getValue('search');
+                            } else if ($action == 'search-result') {
+                                $searchQuery = $view->query;
+                            }
+                        }
+                    ?>
+                    <form id="search-form" action="<?php echo $this->url('search'); ?>" method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="srch_left"><input id="search" name="search" type="text" value="<?php echo $searchQuery ? $this->escape($searchQuery) : 'Search Businesses'; ?>"></div>
+                        <div class="srch_right"><a href="#search" onclick="$('#search-form').submit();"><img src="/images/srch_btn.jpg" alt="Search" title="Search"></a></div>
+                    </form>
+                </div>
+                <div class="text1">Search by Category, City, State, Zip Code, Title, Description of Video</div>
+
+                <?php if ($this->add_business_button && !Zend_Auth::getInstance()->hasIdentity()): ?>
+                     <div class="text1"><a href="<?php echo $this->url('signup'); ?>"><img src="/images/add.jpg" alt="Add Your Business"></a></div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

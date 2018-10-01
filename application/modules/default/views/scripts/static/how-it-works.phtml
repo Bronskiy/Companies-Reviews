@@ -1,0 +1,161 @@
+<style>
+    input[type=text]{
+        width:280px
+    }
+
+    textarea{
+        width:280px;
+        height:150px;
+    }
+
+    dt{float:left;}
+
+    dd {
+        margin-left: 130px;
+    }
+
+    table tr:last-child {
+       display: none;
+    }
+</style>
+
+<div class="special-static">
+    <div class="content_area_inner_top">
+    <div class="content_area_inner_left">
+    <h1>How It Works</h1>
+    <h4>A Quick understanding of how Revudio works in 3 easy steps!</h4>
+    <div class="steps">
+    <div class="step1">1</div><!--step1-->
+    <div class="s1"><h3>Engage</h3><p>Building Customer Relationships</p><p>
+    </p></div><!--s1-->
+
+    </div><!--steps-->
+
+    <div class="steps">
+    <div class="step1">2</div><!--step1-->
+    <div class="s1"><h3>Track </h3><p>Capture Customer Feedback</p><p>
+    </p></div><!--s1-->
+
+    </div><!--steps-->
+
+    <div class="steps">
+    <div class="step1">3</div><!--step1-->
+    <div class="s1"><h3>Remarket</h3><p>Follow Up With Customers</p><p>
+    </p></div><!--s1-->
+
+    </div><!--steps-->
+
+    <p class="para">Revudio's unique system allows business owners to capture reviews in real time, by engaging directly with their customers. Gathering reliable information is not only important but a pivotal aspect of maintaining proper business practices, and understanding how the customer feels about their products and services.  Below are some of the benefits of Revudio and how it can help translate customer feedback into a more streamline process of remarketing to customers.</p><img src="/images/arrow.png" width="36" height="48">
+
+    </div><!--content_area_inner_left-->
+    <div class="content_area_inner_right">
+    <h2>Watch How It Works Video</h2>
+    <div class="how_video">
+        <a href="#how-it-works-player" id="how-it-works-video" >
+            <img src="/images/revid2.png" alt="How It Works" title="How It Works">
+        </a>
+    </div>
+    <div class="hide">
+        <div style="width:800px" class="is-splash is-paused" id="how-it-works-player">
+            <video preload="none" poster="/images/revid2.png">
+                <source type="video/mp4" src="/video/how-it-works.mp4">
+            </video>
+        </div>
+    </div>
+    </div><!--content_area_inner_right-->
+
+
+    <div class="content_area_inner_mid">
+        <div class="beni"><img src="/images/benifites.png" width="557" height="28"></div>
+
+        <div class="points">
+            <ul>
+                <li>System to remarket to loyal customers through email for future promotions and discounts.</li>
+                <li>Reconnect with customers for return business potential.</li>
+                <li>Gives credibility to business owners from legitimate ratings by real customers.</li>
+                <li>Personal business profile through Revudio with unique business information &amp; user features.</li>
+                <li>Real time review banner or icon script on business owners website.</li>
+                <li>Unique way to engage customers personally through our system.</li>
+            </ul>
+            <a href="#">And Much More...</a>
+        </div>
+
+        <div class="contact_form">
+            <h5>CONTACT US</h5>
+
+            <p>To learn more about our services feel free to email us below.</p>
+
+            <div class="big-divider"></div>
+
+            <form action="/how-it-works" method="post" name="contactus" id="contactus">
+                <?php echo $this->form->getElement("csrf_token"); ?>
+                <input type="text" value="Name:" name="name" id="txtname" >
+                <input type="text" value="Phone:" name="phone" id="txtphone" >
+                <input type="text" value="Email:"name="email" id="txtemail">
+                <input type="text" value="How did you hear about us?" name="hear" id="txthear" >
+                <textarea value="" name="comment" id="txtcomment" >Comment:</textarea>
+
+
+                <div class="big-divider"></div>
+
+                <input type="button" id="button">
+            </form>
+
+            <?php
+                if ($this->sentemail) {
+                    echo "<div style='clear:both; color: #FF6600;    padding: 10px;    text-align: center;'>Email Sent Successfully</div>";
+                }
+            ?>
+        </div>
+    </div>
+
+    <div class="content_area_inner_bottom">
+    <h6>Have questions? We got answers:</h6>
+    <div class="pagecontent">
+    <div class="heading">
+    How does the free 30-day trial work?
+    </div><!--heading-->
+    <p>&nbsp;</p>
+    </div><!--content-->
+    <div class="pagecontent content_right">
+    <div class="heading">
+    Can I get help setting up my profile?
+    </div><!--heading-->
+    <p>&nbsp;</p>
+    </div><!--content-->
+    <div class="pagecontent">
+    <div class="heading">
+    What if I have more than one business?
+    </div><!--heading-->
+    <p>&nbsp;</p>
+    </div><!--content-->
+    <div class="pagecontent content_right">
+    <div class="heading">
+    Can I cancel anytime?
+    </div><!--heading-->
+    <p>&nbsp;</p>
+    </div><!--content-->
+    </div><!--content_area_inner_bottom-->
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $("#how-it-works-player").flowplayer({
+            swf     : '/js/flowplayer/flowplayer.swf',
+            engine  : 'html5',
+            preload : false
+        });
+    });
+
+    // how it works video
+    $('#how-it-works-video').fancybox({
+        afterShow : function () {
+            $('#how-it-works-player').data('flowplayer').load();
+        },
+
+        afterClose : function () {
+            $('#how-it-works-player').data('flowplayer').unload();
+        }
+    });
+</script>

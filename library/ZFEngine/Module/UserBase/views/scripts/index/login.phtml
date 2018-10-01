@@ -1,0 +1,11 @@
+<h1><?php echo $this->title; ?></h1>
+
+<?php echo $this->form; ?>
+
+<?php if($this->forgotPassword): ?>
+    <p class="forgot-password"><a href="<?php echo $this->url(array(
+        'module' => 'users',
+        'controller' => 'index',
+        'action' => 'password-restore'),
+    'default', true); ?>"><?php echo $this->translate('Забыли пароль?'); ?></a></p>
+<?php endif; ?>

@@ -1,0 +1,82 @@
+<?php if ($this->articles && $this->articles->count() > 0): ?>
+    <div class="pull-right">
+        <div class="latest-articles-top">
+            <h3>Latest Articles</h3>
+
+            <ul class="article-list">
+                <?php foreach ($this->articles as $article): ?>
+                    <li>
+                        <a href="<?php echo $this->urlGenerator()->companyArticleUrl($article->Company, $article); ?>" class="title"><?php echo $this->escape($article->title); ?></a>
+
+                        <div class="info">
+                            <span class="label"><?php echo $this->dateFormat()->formatFromString($article->created_at); ?></span>
+                        </div>
+
+                        <div class="intro">
+                            <?php echo Main_Service_UrlLinker::process($this->escape($article->intro)); ?>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if (count($this->paginator)): ?>
+    <ul class="company-list">
+        <?php foreach($this->paginator as $company): ?>
+            <?php
+                $ratings = $this->ratings()->getAllRatings($company->rating);
+                $starRatingId = 'company-star-' . $company->id;
+            ?>
+            <li>
+                <a href="<?php echo $company->uri; ?>">
+                    <?php echo $this->escape($company->name); ?>
+                </a>
+
+                <div class="rating">
+                    <div id="<?php echo $starRatingId; ?>" class="star-rating"></div>
+
+                    <div class="text-rating">
+                        <span>
+                            <?php echo $ratings['percent']->getRating(); ?>%
+                            <?php echo $ratings['letter']->getRating() ?>
+                        </span>
+                    </div>
+
+                    <?php
+                        echo $this->ratyScript(array(
+                            'element'  => "#$starRatingId",
+                            'readOnly' => true,
+                            'score'    => $ratings['star']->getRating(),
+                        ))->render();
+                    ?>
+                </div>
+
+                <div class="reviews">
+                    <?php echo $company->review_count; ?> reviews
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                "Sliding",
+                "pagination/digg_pagination_company.phtml",
+                array(
+                    "route" => "top_city_category_page",
+                    "params" => array(
+                        "state" => $this->state,
+                        "city" => $this->city,
+                        "category" => $this->category->uri,
+                    )
+                )
+            );
+        }
+    ?>
+<?php else: ?>
+    No companies to display.
+<?php endif; ?>

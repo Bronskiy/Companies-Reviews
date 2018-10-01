@@ -1,0 +1,13 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    We've successfully received your payment. Thank you!
+</p>
+
+<p>
+    <?php echo $this->company; ?> &mdash; <?php echo $this->plan; ?><br>
+    Total: <?php echo $this->amount; ?><br>
+    Paid Until: <?php echo $this->next; ?>
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

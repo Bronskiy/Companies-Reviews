@@ -1,0 +1,9 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    Your company did not reach the desired review goal of <b><?php echo $this->ratingGoal; ?></b>
+    reviews within <?php echo $this->period ?> days. You have only <b><?php echo $this->reviewsCount; ?></b>
+    reviews so far.
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

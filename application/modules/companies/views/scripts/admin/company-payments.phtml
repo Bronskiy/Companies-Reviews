@@ -1,0 +1,41 @@
+<div class="wrapper">
+    <div class="buttons">
+        <?php echo $this->partial("admin/partial/company-menu.phtml", array('company' => $this->company)); ?>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if (count($this->paginator)): ?>
+    <table class="table payment-list">
+        <th class="date">Date</th>
+        <th>Plan</th>
+        <th class="amount">Amount</th>
+        <th class="discount">Discount</th>
+
+        <?php foreach($this->paginator as $payment): ?>
+            <tr>
+                <td class="date"><?php echo $this->dateFormat()->formatFromString($payment->created_at, 'm/d/Y'); ?></td>
+                <td><?php echo $payment->plan; ?></td>
+                <td class="amount">$<?php echo $payment->amount; ?></td>
+                <td class="discount">$<?php echo $payment->discount; ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination_id.phtml',
+                array(
+                    'id'    => $this->company->id,
+                    'route' => 'admin_company_payments_page'
+                )
+            );
+    ?>
+<?php else: ?>
+    No payments to display.
+<?php endif; ?>

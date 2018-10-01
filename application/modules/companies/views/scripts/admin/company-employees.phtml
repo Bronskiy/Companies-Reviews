@@ -1,0 +1,89 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a class="btn" href="<?php echo $this->url('admin_company_employee_add', array('id' => $this->company->id)); ?>">Add Employee</a>
+        <?php echo $this->partial("admin/partial/company-menu.phtml", array('company' => $this->company)); ?>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if ($this->paginator && count($this->paginator)): ?>
+    <ul class="employee-list">
+        <?php
+            foreach ($this->paginator as $employee):
+                $ratings = Main_Service_Company_Rating_Loader::getAllRatings($employee->rating);
+        ?>
+            <li>
+                <div>
+                    <a href="<?php echo $this->url('admin_company_employee', array('id' => $this->company->id, 'employeeId' => $employee->id)); ?>">
+                        <?php echo $this->escape($employee->name); ?>
+
+                        <?php if ($employee->position): ?>
+                            (<?php echo $this->escape($employee->position); ?>)
+                        <?php endif; ?>
+                    </a>
+
+                    <a class="close-small" href="#delete" title="Delete" onclick="if (! confirm ('Please Confirm Employee Deletion to Continue!')) { return false;} $('#delete-employee-<?php echo $employee->id; ?>').submit();">&times;</a>
+
+                    <?php
+                        echo $this->csrfForm(array(
+                            'id' => 'delete-employee-' . $employee->id,
+                            'class' => 'hide',
+                            'action' => $this->url('admin_company_employee_delete', array('id' => $this->company->id, 'employeeId' => $employee->id)),
+                            'postfix' => $employee->id,
+                            'submitLabel' => 'Delete',
+                        ));
+                    ?>
+                </div>
+
+                <div class="employee-rating">
+                    <div class="rating">
+                        <div id="employee-star-<?php echo $employee->id; ?>" class="employee-star-rating"></div>
+                        <?php
+                            echo $this->ratyScript(array(
+                                'element' => '#employee-star-' . $employee->id,
+                                'readOnly' => true,
+                                'score' => $ratings['star']->getRating(),
+                            ))->render();
+                        ?>
+
+                        <div class="text-rating">
+                            <span>
+                                <?php echo $ratings['percent']->getRating(); ?>%
+
+                                <?php if ($employee->review_count > 0): ?>
+                                    <?php echo $ratings['letter']->getRating(); ?>
+                                <?php endif; ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div>
+                    <a href="<?php echo $this->url("admin_company_employee_reviews", array("id" => $this->company->id, "employeeId" => $employee->id)); ?>"><?php echo $employee->review_count; ?> reviews</a>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                "Sliding",
+                "pagination/digg_pagination_company.phtml",
+                array(
+                    "route" => "admin_company_employees_page",
+                    "params" => array(
+                        "id" => $this->companyId,
+                    )
+                )
+            );
+        }
+    ?>
+<?php else: ?>
+    No employees to display.
+<?php endif; ?>

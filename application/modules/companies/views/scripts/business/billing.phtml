@@ -1,0 +1,239 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a class="btn" href="<?php echo $this->url('business_cancel_account'); ?>">Cancel Account</a>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php
+    $date = "N/A";
+    $plan = $this->company->Plan;
+    $amount = 0;
+    $monthlyAmount = 0;
+    $discountAmount = 0;
+    $discount = null;
+
+    if ($this->company->discount_id) {
+        $discount = $this->company->Discount;
+    }
+
+    if ($this->company->status != Companies_Model_Company::STATUS_NOT_ACTIVATED) {
+        $date = new DateTime($this->company->payment_date);
+        $date = $date->format("m/d/Y");
+        $amount = $plan->monthly_fee;
+
+        if ($discount) {
+            $discountAmount = $discount->monthly_discount;
+        } else {
+            $discountAmount = 0;
+        }
+    } else {
+        $amount = $plan->setup_fee + $plan->monthly_fee;
+        $monthlyAmount = $plan->monthly_fee;
+
+        if ($discount) {
+            $discountAmount = $discount->first_month_discount;
+            $monthlyAmount -= $discount->monthly_discount;
+        } else {
+            $discountAmount = 0;
+        }
+    }
+
+    $total = $amount - $discountAmount;
+
+    if ($total < 0) {
+        $total = 0;
+        $discountAmount = $amount;
+    }
+?>
+
+<?php if ($this->card): ?>
+    <div class="well pull-right card-details">
+        <b><?php echo $this->card->type; ?> / ******<?php echo mb_substr($this->card->number, -10); ?></b><br>
+        <?php echo $this->card->exp_date; ?><br>
+        <?php
+            $data = array();
+
+            if ($this->card->name) {
+                $data[] = $this->card->name;
+            }
+
+            if ($this->card->address) {
+                $data[] = $this->card->address;
+            }
+
+            if ($this->card->city) {
+                $data[] = $this->card->city;
+            }
+
+            if ($this->card->state) {
+                $data[] = $this->card->state;
+            }
+
+            if ($this->card->zip) {
+                $data[] = $this->card->zip;
+            }
+
+            if (count($data) > 0) {
+                $data = implode(", ", $data);
+            } else {
+                $data = null;
+            }
+        ?>
+        <?php if ($data): ?>
+            <div class="card-billing-address">
+                <?php echo $data; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+<b><?php echo $this->company->Plan->name; ?></b>
+
+<br><br>
+
+<?php if (in_array($this->company->status, array(Companies_Model_Company::STATUS_NOT_ACTIVATED, Companies_Model_Company::STATUS_TAKEN))): ?>
+    <p>
+        Amount Due: $<?php echo sprintf("%.2f", $amount); ?><br>
+        Discount: $<?php echo sprintf("%.2f", $discountAmount); ?> <?php if ($discount) echo "($discount->code)"; ?><br>
+        <b>Total: $<?php echo sprintf("%.2f", $total); ?></b>, then
+
+        <?php if ($monthlyAmount <= 0): ?>
+            free of charge
+        <?php else: ?>
+            $<?php echo sprintf("%.2f", $monthlyAmount); ?>/mo
+        <?php endif; ?>
+    </p>
+
+    <br>
+
+    <?php
+        echo $this->partial("form.phtml", array(
+            'form' => $this->discountForm,
+            'action' => $this->url('business_billing'),
+            'button' => 'Apply',
+        ));
+    ?>
+
+    <div class="clearfix"></div>
+
+    Please enter your credit card details and billing address. Note that you won't be able to apply a discount after
+    the payment is made, so if you have a discount code, please make sure to apply it before entering your credit card
+    detaills below.
+<?php else: ?>
+    <?php if ($total <= 0): ?>
+        <p>
+            Congratulations, you have a free account and won't be charged for using our service! Yay!
+        </p>
+    <?php else: ?>
+        <p>
+            Monthly Fee: $<?php echo sprintf("%.2f", $amount); ?><br>
+            Discount: $<?php echo sprintf("%.2f", $discountAmount); ?> <?php if ($discount) echo "(" . $discount->code . ")"; ?><br>
+            Total: $<?php echo sprintf("%.2f", $total); ?><br>
+            Paid Until: <?php echo $date; ?><br>
+        </p>
+
+        <div class="clearfix"></div>
+
+        Please enter your new credit card details and billing address in the form below. The old card will be deleted
+        from the system and won't be charged again.
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php if ($total > 0 || $this->company->status == Companies_Model_Company::STATUS_NOT_ACTIVATED): ?>
+    <br>&nbsp;
+
+    <form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->url('business_billing'); ?>" id="braintree-payment-form">
+        <fieldset>
+            <?php echo $this->cardForm->csrf_token; ?>
+
+            <?php
+                foreach ($this->cardForm->getElements() as $element):
+                    if (in_array($element->getName(), array("csrf_token", "number", "year", "month", "cvv", "agree"))) {
+                        continue;
+                    }
+            ?>
+                <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                    <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                    <div class="controls">
+                        <?php echo $element; ?>
+                        <?php if ($element->getMessages()): ?>
+                            <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                        <?php elseif ($element->getDescription()): ?>
+                            <span class="help-block"><?php echo $element->getDescription(); ?></span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+            <div class="control-group ">
+                <label class="control-label" for="number">Card Number*</label>
+                <div class="controls">
+                    <input type="text" data-encrypted-name="number" id="number" value="" maxlength="16">
+                </div>
+            </div>
+            <div class="control-group ">
+                <label class="control-label">Expire Date*</label>
+                <div class="controls">
+                    <?php
+                        $month = (int) date('n');
+                        $year = (int) date('y');
+                    ?>
+                    <select class="input-mini" data-encrypted-name="month">
+                        <?php for ($i = 1; $i <= 12; $i++): ?>
+                            <option value="<?php echo $i; ?>"<?php if ($i == $month) echo ' selected'; ?>><?php echo sprintf('%02d', $i); ?></option>
+                        <?php endfor; ?>
+                    </select>
+                    /
+                    <select class="input-mini" data-encrypted-name="year">
+                        <?php for ($i = $year; $i <= $year + 10; $i++): ?>
+                            <option value="<?php echo $i; ?>"<?php if ($i == $year) echo ' selected'; ?>><?php echo sprintf('%02d', $i); ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="cvv">CVV*</label>
+                <div class="controls">
+                    <input type="text" data-encrypted-name="cvv" id="cvv" value="" maxlength="4">
+                </div>
+            </div>
+            <?php $element = $this->cardForm->agree; ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <div class="controls">
+                    <label>
+                        <input type="checkbox" name="agree" id="agree" value="1" <?php if ($element->getValue()) echo "checked"; ?>><br><br>
+                        By clicking on the button below you are acknowledging that you are the owner of the credit card
+                        and administrator of this account profile. For more information please read our terms and conditions.
+                    </label>
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn">
+                        <?php if ($this->company->status == Companies_Model_Company::STATUS_NOT_ACTIVATED && $total > 0): ?>
+                            Pay $<?php echo sprintf("%.2f", $total); ?>
+                        <?php elseif ($this->company->status == Companies_Model_Company::STATUS_NOT_ACTIVATED && $total == 0): ?>
+                            Start Trial
+                        <?php else: ?>
+                            Save
+                        <?php endif; ?>
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-1.2.0.min.js"></script>
+
+    <script type="text/javascript">
+        var bt = Braintree.create('<?php echo Main_Service_ConfigsLoader::getConfig()->braintree->clientKey; ?>');
+        bt.onSubmitEncryptForm('braintree-payment-form');
+    </script>
+<?php endif; ?>

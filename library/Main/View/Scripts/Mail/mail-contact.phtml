@@ -1,0 +1,10 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    You've received a new message from user <?php echo $this->contactName; ?>:<br>
+    E-mail: <?php echo $this->contactMail; ?><br>
+    Phone: <?php echo $this->contactPhone; ?><br>
+    Message: <?php echo $this->contactMessage; ?><br>
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

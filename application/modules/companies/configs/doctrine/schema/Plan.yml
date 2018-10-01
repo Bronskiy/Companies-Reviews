@@ -1,0 +1,29 @@
+Companies_Model_Plan:
+  tableName: plans
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      notnull: true
+      autoincrement: true
+    name:
+      type: string(1000)
+      notnull: true
+    setup_fee:
+      type: decimal(11)
+      scale: 2
+      notnull: true
+    monthly_fee:
+      type: decimal(11)
+      scale: 2
+      notnull: true
+    status:
+      type: enum
+      values: ['active', 'deleted']
+      notnull: true
+      default: active

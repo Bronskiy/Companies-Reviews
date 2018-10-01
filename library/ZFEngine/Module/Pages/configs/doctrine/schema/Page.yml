@@ -1,0 +1,27 @@
+## pages
+
+ZFEngine_Module_Pages_Model_Page:
+  tableName: pages
+  actAs:
+    I18n:
+      fields: [title, content]
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    title:
+      type: string(255)
+      notnull: true
+    alias:
+      type: string(32)
+      unique: true
+      notnull: true
+    content:
+      type: string()
+      notnull: true

@@ -1,0 +1,23 @@
+<?php if ($this->code == 404): ?>
+    <p>
+        The page you requested does not exist - <?php echo $this->request->getRequestUri(); ?>
+    </p>
+<?php elseif ($this->code == 500): ?>
+    <p>
+        Application error. Please contact the administrator.
+    </p>
+
+    <?php if (isset($this->exception)): ?>
+        <p>
+            <h3>Exception Information:</h3>
+            <pre><?php echo $this->exception->getMessage() ?></pre>
+
+            <h3>Stack trace:</h3>
+            <pre><?php echo $this->exception->getTraceAsString(); ?></pre>
+
+            <h3>Request Parameters:</h3>
+            <pre><?php echo var_export($this->request->getParams(), true); ?></pre>
+        </p>
+    <?php endif; ?>
+<?php endif; ?>
+

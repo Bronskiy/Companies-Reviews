@@ -1,0 +1,44 @@
+<form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->urlGenerator()->companyReviewChangeUrl($this->review->Company, $this->review); ?>">
+    <fieldset>
+        <?php echo $this->reviewForm->csrf_token; ?>
+
+        <?php
+            foreach ($this->reviewForm->getElements() as $element):
+                if ($element->getName() == 'csrf_token')
+                    continue;
+        ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                    <?php if ($element->getName() == 'rating'): ?>
+                        <div id="leave-review-star"></div>
+                        <div class="leave-review-star-description">awful (0%)</div>
+                    <?php endif; ?>
+
+                    <?php echo $element; ?>
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php elseif ($element->getDescription()): ?>
+                        <span class="help-block"><?php echo $element->getDescription(); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn" onclick="return checkRatingUpdated();">Send</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<?php
+    echo $this->ratyScript(array(
+        'element' => '#leave-review-star',
+        'score'   => $this->reviewForm->getValue('rating') ? $this->reviewForm->getValue('rating') : 0,
+        'click'   => "function (score, evt) { $('#rating').val(score); updateRatingDescription(score); }",
+        'half'    => true,
+    ))->render();
+?>

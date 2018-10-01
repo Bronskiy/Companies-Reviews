@@ -1,0 +1,52 @@
+<?php echo $this->doctype(); ?>
+
+<html>
+
+    <head>
+
+        <?php echo $this->headMeta(); ?>
+
+        <?php echo $this->headTitle($this->escape($this->title)); ?>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+         
+        <link rel="shortcut icon" href="/images/icons/favicon.ico">
+
+        <?php if (isset($this->description)): ?>
+
+            <meta name="description" content="<?php echo $this->description; ?>">
+
+        <?php endif; ?>
+
+        <?php echo $this->headLink(); ?>
+
+        <?php echo $this->headScript(); ?>
+
+    </head>
+
+    <body>
+
+        <?php echo $this->partial('partial/header.phtml', array( 'add_business_button' => true )); ?>
+
+        <?php echo $this->render('partial/navigation.phtml'); ?>
+
+
+
+        <?php echo $this->render('partial/notifications.phtml'); ?>
+
+
+
+        <div class="content-wide">
+
+            <?php echo $this->layout()->content; ?>
+
+        </div>
+
+
+
+        <?php echo $this->render('partial/footer.phtml'); ?>
+
+    </body>
+
+</html>
+

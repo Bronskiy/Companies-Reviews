@@ -1,0 +1,223 @@
+<?php echo $this->doctype(); ?>
+<html>
+    <head>
+        <?php echo $this->headMeta(); ?>
+        <?php echo $this->headTitle($this->escape($this->title)); ?>
+        
+        <link rel="shortcut icon" href="/images/icons/favicon.ico">
+        
+         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <?php if (isset($this->description)): ?>
+            <meta name="description" content="<?php echo $this->description; ?>">
+        <?php endif; ?>
+        <?php echo $this->headLink(); ?>
+        <?php echo $this->headScript(); ?>
+    </head>
+    <body>
+        <?php echo $this->partial('partial/header.phtml', array( 'add_business_button' => true )); ?>
+        <?php echo $this->render('partial/navigation.phtml'); ?>
+
+        <?php
+            $user = Main_Service_Models::getAuthUser();
+            $message = null;
+            $company = Main_Service_Models::getAuthUser()->Company;
+
+            if ($user->Role->name == Users_Model_Role::MEMBER_ROLE) {
+                $status = $company->status;
+
+                if ($status == Companies_Model_Company::STATUS_NOT_ACTIVATED) {
+                    $message = "Company profile is not activated and is not visible on the website. Please, " .
+                        '<a href="' . $this->url("business_billing") . '">complete the payment</a>' .
+                        " to activate your profile and publish it on the website.";
+                } elseif ($status == Companies_Model_Company::STATUS_SUSPENDED) {
+                    $message = "Company profile is suspended and is not visible on the website. Please, " .
+                        '<a href="' . $this->url("business_billing") . '">complete the payment</a>' .
+                        " to activate your profile and publish it on the website again.";
+                } elseif ($status == Companies_Model_Company::STATUS_TAKEN) {
+                    $message = "Your account is free to use for 1 month. Please, fill in the credit card details in the " .
+                        '<a href="' . $this->url("business_billing") . '">billing section</a>' .
+                        " to be able to use our service after this period expires.";
+                }
+            }
+        ?>
+
+        <?php if ($message): ?>
+            <div class="warning-message">
+                <div class="warning-message-container">
+                    Dear <?php echo $user->name ? $user->name : $user->mail; ?>! <?php echo $message; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php echo $this->render('partial/notifications.phtml'); ?>
+
+        <div class="content">
+            <div class="menu">
+                <ul class="nav nav-pills nav-stacked">
+                    <?php
+                        $currentRoute = Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName();
+                        $routes = array();
+
+                        if (in_array(Main_Service_Models::getAuthUser()->Role->name, array(Users_Model_Role::ADMIN_ROLE, Users_Model_Role::SUBADMIN_ROLE))) {
+                            $routes = array(
+                                "Reviews" => array(
+                                    "admin_reviews",
+                                    "admin_reviews_page",
+                                    "admin_review_search_results",
+                                    "admin_review_search_results_page",
+                                    "admin_review_comment",
+                                ),
+                                "Categories" => array(
+                                    "admin_categories",
+                                    "admin_categories_page",
+                                    "admin_category_edit",
+                                    "admin_category_add",
+                                    "admin_categories_search_results",
+                                    "admin_categories_search_results_page",
+                                ),
+                                "Companies" => array(
+                                    "admin_companies",
+                                    "admin_companies_page",
+                                    "admin_company_edit",
+                                    "admin_company_coupon",
+                                    "admin_company_payments",
+                                    "admin_company_payments_page",
+                                    "admin_company_promos",
+                                    "admin_companies_promos_page",
+                                    "admin_company_promo",
+                                    "admin_add_promo",
+                                    "admin_company_cancel_account",
+                                    "admin_companies_search_results",
+                                    "admin_companies_search_results_page",
+                                    "admin_company_photos",
+                                    "admin_company_billing",
+                                    "admin_company_employees",
+                                    "admin_company_employees_page",
+                                    "admin_company_employee_add",
+                                    "admin_company_employee",
+                                    "admin_company_employee_reviews",
+                                    "admin_company_employee_reviews_page",
+                                    "admin_company_articles",
+                                    "admin_company_articles_page",
+                                    "admin_company_article",
+                                    "admin_company_article_add",
+                                    "admin_company_article_comments",
+                                    "admin_company_article_comments_page",
+                                    "admin_companies_import",
+                                    "admin_company_users",
+                                    "admin_company_users_page",
+                                    "admin_company_reviews",
+                                    "admin_company_reviews_page",
+                                    "admin_company_convert",
+                                ),
+                                "Users" => array(
+                                    "admin_users",
+                                    "admin_users_page",
+                                    "admin_user_edit",
+                                    "admin_users_search_results",
+                                    "admin_users_search_results_page",
+                                ),
+                                "Discounts" => array(
+                                    "admin_discounts",
+                                    "admin_discounts_page",
+                                    "admin_discount_add",
+                                    "admin_discount_edit",
+                                )
+                            );
+
+                            if (Main_Service_Models::getAuthUser()->Role->name == Users_Model_Role::ADMIN_ROLE) {
+                                $routes["Payments"] = array(
+                                    "admin_payments",
+                                    "admin_payments_page",
+                                );
+                            }
+                        } elseif (Main_Service_Models::getAuthUser()->Role->name == Users_Model_Role::MEMBER_ROLE) {
+                            $routes = array(
+                                "Reviews" => array(
+                                    "business_reviews",
+                                    "business_reviews_page",
+                                    "business_review_search_results",
+                                    "business_review_search_results_page",
+                                    "business_review_comment",
+                                ),
+                                "Reviewers" => array(
+                                    "business_reviewers",
+                                    "business_reviewers_page",
+                                ),
+                                "-",
+                                "Profile" => "business_profile",
+                                "Employees" => array(
+                                    "business_employees",
+                                    "business_employees_page",
+                                    "business_employee",
+                                    "business_employee_add",
+                                    "business_employee_reviews",
+                                    "business_employee_reviews_page",
+                                ),
+                                "-",
+                                "Articles" => array(
+                                    "business_articles",
+                                    "business_articles_page",
+                                    "business_article",
+                                    "business_article_add",
+                                    "business_article_comments",
+                                    "business_article_comments_page",
+                                ),
+                                "Comments" => array(
+                                    "business_articles_comments",
+                                    "business_articles_comments_page",
+                                ),
+                                "-",
+                                "Coupon" => "business_coupon",
+                                "Promos" => array(
+                                    "business_promos",
+                                    "business_promos_page",
+                                    "business_promo",
+                                    "business_add_promo",
+                                ),
+                                "Banners" => "business_banners",
+                                "-",
+                                "Account" => "business_account",
+                                "Billing" => array(
+                                    "business_billing",
+                                    "business_cancel_account",
+                                ),
+                                "Payments" => array(
+                                    "business_payments",
+                                    "business_payments_page",
+                                ),
+                            );
+                        }
+                    ?>
+
+                    <?php
+                        foreach ($routes as $title => $routeList):
+                            if (!is_array($routeList) && $routeList !== "-") {
+                                $routeList = array($routeList);
+                            }
+
+                            if (is_array($routeList)):
+                    ?>
+                                <li<?php if (in_array($currentRoute, $routeList)) echo ' class="active"'; ?>>
+                                    <a href="<?php echo $this->url($routeList[0]); ?>"><?php echo $title; ?></a>
+                                </li>
+                            <?php else: ?>
+                                <li class="separator"></li>
+                    <?php
+                            endif;
+                        endforeach;
+                    ?>
+                </ul>
+            </div>
+
+            <div class="content-account">
+                <?php echo $this->layout()->content; ?>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+
+        <?php echo $this->render('partial/footer.phtml'); ?>
+    </body>
+</html>

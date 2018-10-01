@@ -1,0 +1,53 @@
+<div class="wrapper">
+    <?php if ($this->paginator && count($this->paginator)): ?>
+        <div class="buttons">
+            <a class="btn" href="<?php echo $this->url('business_get_reviewers', array('type' => 'csv'));?>">Download</a>
+        </div>
+    <?php endif; ?>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if ($this->paginator && count($this->paginator)): ?>
+    <div class="review_area_big">
+        <table class="table .table-striped">
+            <thead>
+                <th width="20%">Review Date</th>
+                <th width="20%">Name</th>
+                <th width="20%">E-mail</th>
+                <th width="20%">From</th>
+                <th width="10%">Reviews</th>
+                <th>Rating</th>
+            </thead>
+            <tbody>
+            <?php foreach ($this->paginator as $reviewer): ?>
+                <tr>
+                    <td>
+                        <?php
+                            $date = new DateTime($reviewer->first_review_date);
+                            echo $date->format('m/d/Y');
+                        ?>
+                    </td>
+                    <td><?php echo $this->escape($reviewer->client_name); ?></td>
+                    <td><?php echo $reviewer->mail; ?></td>
+                    <td><?php echo $this->escape($reviewer->client_from ? $reviewer->client_from : 'N/A'); ?></td>
+                    <td><?php echo $reviewer->review_count; ?></td>
+                    <td><?php echo $reviewer->rating * 100 ?>%</td>
+        </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination.phtml',
+                array( 'route' => 'business_reviewers_page' )
+            );
+    ?>
+<?php else: ?>
+    No reviewers to display.
+<?php endif; ?>

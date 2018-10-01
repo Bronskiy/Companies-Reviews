@@ -1,0 +1,13 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    <a href="<?php echo $this->companyLink;?>"><?php echo $this->company->name; ?></a> has requested to
+    <a href="<?php echo $this->changeLink; ?>">change your review</a>.
+</p>
+
+<p>
+    We understand that situations aren't perfect and we feel we need the opportunity to connect with our customers and
+    try to resolve any misunderstanding and resolve any issues you might have had with our company.
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

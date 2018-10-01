@@ -1,0 +1,32 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a class="btn" href="<?php echo $this->url("admin_company_articles", array("id" => $this->company->id)); ?>">&lt; Company Articles</a>
+        <a class="btn" href="<?php echo $this->url("admin_company_article_comments", array("id" => $this->company->id, "articleId" => $this->article->id)); ?>">Comments (<?php echo $this->article->Comments->count(); ?>)</a>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->form->getAction(); ?>">
+    <fieldset>
+        <?php foreach ($this->form->getElements() as $element): ?>
+            <div class="control-group <?php if ($element->getMessages()) echo "error"; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); $element->setLabel(""); ?></label>
+                <div class="controls">
+                    <?php echo $element; ?>
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode("", $element->getMessages()); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" name="save" class="btn">Save</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

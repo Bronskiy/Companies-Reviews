@@ -1,0 +1,17 @@
+Users_Model_Role:
+  tableName: roles
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(3)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(100)
+      unique: true
+      notnull: true
+    description:
+      type: string()

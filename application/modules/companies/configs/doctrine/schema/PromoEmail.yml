@@ -1,0 +1,30 @@
+Companies_Model_PromoEmail:
+  tableName: company_promo_emails
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      notnull: true
+      autoincrement: true
+    mail:
+      type: string(100)
+      notnull: true
+    company_promo_id:
+      type: integer(4)
+      notnull: true
+  relations:
+    CompanyPromo:
+      class: Companies_Model_CompanyPromo
+      local: company_promo_id
+      foreign: id
+      foreignAlias: company_promo_emails
+      onDelete: cascade
+      onUpdate: cascade
+  indexes:
+    promo_id_mail_unique:
+      fields:
+        company_promo_id:
+          sorting: ASC
+        mail:
+          sorting: ASC
+      type: unique

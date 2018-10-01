@@ -1,0 +1,44 @@
+Companies_Model_CouponReview:
+  tableName: coupon_reviews
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      notnull: true
+      autoincrement: true
+    is_coupon_sended:
+      type: integer(1)
+      default: null
+    coupon_id:
+      type: integer(4)
+      notnull: true
+    review_id:
+      type: integer(4)
+      notnull: true
+  relations:
+    Coupon:
+      class: Companies_Model_Coupon
+      local: coupon_id
+      foreign: id
+      foreignAlias: CouponReviews
+      onDelete: cascade
+      onUpdate: cascade
+    Review:
+      class: Companies_Model_Review
+      local: review_id
+      foreign: id
+      foreignAlias: CouponReviews
+      onDelete: cascade
+      onUpdate: cascade
+  indexes:
+    coupon_review_unique_idx:
+      fields:
+        review_id:
+          sorting: ASC
+        coupon_id:
+          sorting: ASC
+      type: unique

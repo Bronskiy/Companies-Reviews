@@ -1,0 +1,34 @@
+Companies_Model_CompanyArticle:
+  tableName: company_articles
+  actAs: [Timestampable]
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      unsigned: true
+      notnull: true
+      autoincrement: true
+    company_id:
+      type: integer(4)
+      notnull: true
+    title:
+      type: string(1000)
+      notnull: true
+    intro:
+      type: clob(2147483647)
+      default: null
+    content:
+      type: clob(2147483647)
+      default: null
+  relations:
+    Company:
+      class: Companies_Model_Company
+      local: company_id
+      foreign: id
+      foreignAlias: Articles
+      onDelete: cascade
+      onUpdate: cascade

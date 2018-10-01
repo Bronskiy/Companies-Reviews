@@ -1,0 +1,59 @@
+<?php if (count($this->paginator)): ?>
+    <ul class="company-list">
+         <?php foreach ($this->paginator as $company): ?>
+            <?php
+                $ratings = $this->ratings()->getAllRatings($company->rating);
+                $starRatingId = "company-star-" . $company->id;
+            ?>
+            <li>
+                <a href="<?php echo $company->uri; ?>">
+                    <?php echo $this->escape($company->name); ?>
+                </a>
+
+                <div class="rating">
+                    <div id="<?php echo $starRatingId; ?>" class="star-rating"></div>
+
+                    <div class="text-rating">
+                        <span>
+                            <?php echo $ratings["percent"]->getRating(); ?>%
+
+                            <?php if ($company->review_count > 0): ?>
+                                <?php echo $ratings["letter"]->getRating() ?>
+                            <?php endif; ?>
+                        </span>
+                    </div>
+
+                    <?php
+                        echo $this->ratyScript(array(
+                            "element" => "#$starRatingId",
+                            "readOnly" => true,
+                            "score" => $ratings["star"]->getRating(),
+                        ))->render();
+                    ?>
+                </div>
+
+                <div class="reviews">
+                    <?php echo $company->review_count; ?> reviews
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                "Sliding",
+                "pagination/digg_pagination_company.phtml",
+                array(
+                    "route" => "category_page",
+                    "params" => array(
+                        "category" => $this->category->uri,
+                    ),
+                )
+            );
+        }
+    ?>
+<?php else: ?>
+    No companies to display.
+<?php endif; ?>

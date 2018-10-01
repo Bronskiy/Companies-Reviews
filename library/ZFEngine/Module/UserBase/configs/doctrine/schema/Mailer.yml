@@ -1,0 +1,22 @@
+## Очередь рассылки
+
+ZFEngine_Module_UserBase_Model_Mailer:
+  tableName: mailer
+  actAs:
+    Timestampable:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    email:
+      type: string(128)
+      notnull: true
+      email: true
+    subject:
+      type: string(255)
+      notnull: true
+    body:
+      type: string()
+      notnull: true

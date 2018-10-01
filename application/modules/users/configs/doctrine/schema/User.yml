@@ -1,0 +1,59 @@
+Users_Model_User:
+  tableName: users
+  actAs: [Timestampable]
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(3)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(100)
+    phone:
+      type: string(1000)
+    mail:
+      type: string(255)
+      notnull: true
+      unique: true
+    password_hash: 
+      type: string(32)
+      notnull: true
+    password_salt:
+      type: string(50)
+      notnull: true
+    restore_hash: 
+      type: string(32)
+      notnull: false
+      default: NULL 
+      unique: true
+    role_id:
+      type: integer(3)
+      notnull: false
+      default: NULL
+    company_id:
+      type: integer(4)
+      notnull: false
+      default: NULL
+    status:
+      type: enum
+      values: ['unconfirmed', 'active', 'deleted', 'cancelled']
+      notnull: true
+      default: unconfirmed
+  relations:
+    Role:
+      type: one
+      class: Users_Model_Role
+      local: role_id
+      foreign: id
+      onUpdate: CASCADE
+      onDelete: RESTRICT
+    Company:
+      class: Companies_Model_Company
+      local: company_id
+      foreign: id
+      foreignAlias: Users
+      onDelete: set null
+      onUpdate: cascade

@@ -1,0 +1,73 @@
+Companies_Model_Review:
+  tableName: reviews
+  actAs: [Timestampable]
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      notnull: true
+      autoincrement: true
+    client_name:
+      type: string(100)
+      notnull: true
+    client_from:
+      type: string(100)
+    review:
+      type: clob(65535)
+    rating:
+      type: decimal(3)
+      scale: 2
+      notnull: true
+    status:
+      type: enum
+      values: ['not_processed','processing','error','published','reconciliation', 'unconfirmed']
+      notnull: true
+    confirm_hash:
+      type: string(32)
+      unique: true
+      default: null
+    reconcile_hash:
+      type: string(32)
+      unique: true
+      default: null
+    mail:
+      type: string(100)
+      notnull: true
+    company_id:
+      type: integer(4)
+      notnull: true
+    company_employee_id:
+      type: integer(4)
+      default: null
+    video_attach_hash:
+      type: string(32)
+      unique: true
+      default: null
+    video_attach_date:
+      type: date
+      default: null
+    client_avatar:
+      type: string(100)
+      default: null
+    owner_comment:
+      type: clob(65535)
+      default: null
+  relations:
+    Company:
+      class: Companies_Model_Company
+      local: company_id
+      foreign: id
+      foreignAlias: reviews
+      onDelete: cascade
+      onUpdate: cascade
+    Employee:
+      class: Companies_Model_Employee
+      local: company_employee_id
+      foreign: id
+      foreignAlias: reviews
+      onDelete: set null
+      onUpdate: cascade

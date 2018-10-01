@@ -1,0 +1,49 @@
+<h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+<hr>
+
+<?php if ($this->coupon && $this->coupon->id): ?>
+    <?php echo $this->csrfForm(array(
+        'id'      => "delete-coupon-form",
+        'style'   => "display:none;",
+        'action'  => $this->url('business_delete_coupon'),
+        'postfix' => $this->coupon->id,
+    )); ?>
+<?php endif; ?>
+
+<form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->url('business_coupon'); ?>">
+    <fieldset>
+        <?php echo $this->form->csrf_token; ?>
+
+        <?php
+            foreach ($this->form->getElements() as $element):
+                if ($element->getName() == 'csrf_token')
+                    continue;
+        ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); $element->setLabel(''); ?></label>
+                <div class="controls">
+                    <?php if ($element->getName() == 'coupon' && $this->coupon && $this->coupon->id): ?>
+                        <button class="btn" onclick="$('#delete-coupon-form').submit(); return false;">Delete</button><br><br>
+                        <img class="coupon" src="<?php echo $this->getPath($this->couponDirs, 'coupon_images', $this->coupon->image); ?>">
+
+                        <hr>
+                    <?php endif; ?>
+
+                    <?php echo $element; ?>
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php elseif ($element->getDescription()): ?>
+                        <span class="help-block"><?php echo $element->getDescription(); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Submit</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

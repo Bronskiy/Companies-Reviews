@@ -1,0 +1,510 @@
+<?php $hasVideo = false; ?>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $this->config()->google->maps->key; ?>&sensor=false"></script>
+<script type="text/javascript">
+    var players = [];
+</script>
+
+<div class="textarea_left">
+    <div class="textarea_top">
+        <div class="text_top_left">
+            <div class="company-info">
+                <?php $filter = new Main_Service_Filter_StringToUri(); ?>
+                <a href="<?php echo $this->url('state_city_category', array( 'state' => $filter->filter($this->company->state), 'city' => $filter->filter($this->company->city), 'category' => $this->company->Category->uri )); ?>">
+                    <?php echo empty($this->company->category_id) ? ucfirst(Companies_Model_Category::UNCATEGORIZED) : $this->company->Category->name;  ?>
+
+                    <?php if ($this->company->local_business): ?>
+                        <?php echo $this->company->city;  ?>
+                        <?php echo $this->states()->getStateNameByKey($this->company->state);  ?>
+                    <?php endif; ?>
+                </a>
+            </div>
+            <div class="logo">
+                <?php if ($this->company->logo): ?>
+                    <img src="<?php echo $this->getPath($this->companyDirsRel, 'images', $this->company->logo); ?>" alt="Business Logo" title="Business Logo" />
+                <?php else: ?>
+                    <img src="/images/logo.png" alt="Business Logo" title="Business Logo">
+                <?php endif; ?>
+            </div>
+
+            <p>
+                <?php if ($this->company->local_business || $this->company->show_address): ?>
+                    <span>
+                        <strong>Address:</strong>
+                        <span><?php echo $this->company->address ? $this->escape($this->company->address) : 'N/A'; ?></span><br>
+
+                        <strong>City:</strong>
+                        <span><?php echo $this->company->city ? $this->escape($this->company->city) : 'N/A'; ?></span><br>
+
+                        <strong>State:</strong>
+                        <span><?php echo $this->company->state ? $this->escape($this->company->state) : 'N/A'; ?></span><br>
+
+                        <strong>Zip:</strong>
+                        <span><?php echo $this->company->zip ? $this->escape($this->company->zip) : 'N/A'; ?></span>
+                    </span><br>
+                <?php endif; ?>
+
+                <strong>Phone:</strong>
+                <span><?php echo $this->company->phone ? $this->escape($this->company->phone) : 'N/A'; ?></span><br>
+
+                <strong>Website:</strong>
+                <span><?php echo $this->company->website ? '<a href="' . $this->company->website . '">' . $this->company->website . '</a>' : 'N/A'; ?></span><br>
+
+                <strong>E-mail:</strong>
+                <span><?php echo $this->company->mail ? $this->escape($this->company->mail) : 'N/A'; ?></span><br>
+
+                <strong>Business Since:</strong>
+                <span><?php echo $this->company->business_since ? $this->escape($this->company->business_since) : 'N/A'; ?></span><br>
+
+                <strong>Owner:</strong>
+                <span><?php echo $this->company->owner ? $this->escape($this->company->owner) : 'N/A'; ?></span><br>
+
+                <strong>Services:</strong>
+                <span><?php echo $this->company->offered_services ? $this->escape($this->company->offered_services) : 'N/A'; ?></span><br>
+            </p>
+            <br/>
+        </div>
+        <div class="text_top_right">
+            <div class="text_top_rviws">
+                <div class="text_rviws">
+                    <span><?php echo $this->company->review_count; ?></span><br />Reviews
+                </div>
+                <div class="star-rating">
+                    <div class="company-star"></div>
+                </div>
+
+                <?php
+                    echo $this->ratyScript(array(
+                        'element'  => '.company-star',
+                        'readOnly' => true,
+                        'score'    => $this->ratings['star']->getRating(),
+                    ))->render();
+                ?>
+                <div class="rviws_scor">
+                    Total Score<br>
+                    <span>
+                        <span><?php echo $this->ratings['percent']->getRating(); ?></span>%
+                        <?php echo $this->ratings['letter']->getRating() ?>
+                    </span>
+                </div>
+            </div>
+
+            <!-- reviews stats -->
+            <?php if(isset($this->reviewStats)) : ?>
+                <div class="reviews-stats">
+                <?php $stats = $this->reviewStats()->getRatingStatsFromRule($this->reviewStats); ?>
+                <?php foreach($stats as $statData):?>
+                    <?php echo $statData['range'][0]; ?> - <?php echo $statData['range'][1]; ?> % : <?php echo $statData['cnt']; ?> reviews<br />
+                <?php endforeach;?>
+                </div>
+            <br />
+            <?php endif; ?>
+                        
+            <p><a href="<?php echo $this->urlGenerator()->companyContactUrl($this->company); ?>"><img src="/images/contact_business.jpg" alt="Contact Business" /></a></p>
+            <p><a href="<?php echo $this->urlGenerator()->companyReviewAddUrl($this->company);?>"><img src="/images/write_your.jpg" alt="Write Your Review" /></a></p>
+            
+            <div class="txt_social_media">
+                <?php if ($this->company->facebook_link && $this->company->facebook_link != 'http://'): ?>
+                    <a href="<?php echo $this->company->facebook_link; ?>"><img src="/images/icons/company-facebook.png" alt="Facebook" title="Facebook"></a>
+                <?php endif; ?>
+                <?php if ($this->company->twitter_link && $this->company->twitter_link != 'http://'): ?>
+                    <a href="<?php echo $this->company->twitter_link; ?>"><img src="/images/icons/company-twitter.png" alt="Twitter" title="Twitter"></a>
+                <?php endif; ?>
+                <?php if ($this->company->linkedin_link && $this->company->linkedin_link != 'http://'): ?>
+                    <a href="<?php echo $this->company->linkedin_link; ?>"><img src="/images/icons/company-linkedin.png" alt="Linkedin" title="Linkedin"></a>
+                <?php endif; ?>
+                <?php if ($this->company->google_link && $this->company->google_link != 'https://'): ?>
+                    <a href="<?php echo $this->company->google_link; ?>"><img src="/images/icons/company-google+.png" alt="Google+" title="Google+"></a><br />
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    
+    <!-- reviews -->
+    <div class="textarea_btom">
+        <h2>
+            Reviews
+
+            <p class="review-count-block">
+                Text Reviews: <span><?php echo $this->textReviewCount; ?>&nbsp;&nbsp;</span>
+                Video Reviews: <span><?php echo $this->videoReviewCount; ?>&nbsp;&nbsp;</span>
+                Total: <span><?php echo $this->textReviewCount + $this->videoReviewCount; ?></span>
+            </p>
+        </h2>
+
+        <?php if (count($this->paginator) > 0): ?>
+            <div class="review_area">
+                <?php foreach ($this->paginator as $review): ?>
+                    <?php
+                        $reviewDirs = $this->getDirs(new Main_Service_Dir_Generator_Review($review), false);
+                        $ratings = $this->ratings()->getAllRatings($review->rating);
+                        $starRatingId = 'review-star-' . $review->id;
+                    ?>
+
+                    <div class="review_area_inn">
+                        <?php
+                            $video = Companies_Model_CompanyVideoTable::getInstance()->getReviewVideo($review->company_id, $review->id);
+
+                            if ($video->exists()):
+                                $hasVideo = true;
+                        ?>
+                            <div class="review_video">
+                                <a href="#review-video-<?php echo $review->id; ?>" class="fancybox-video" data-id="<?php echo $review->id; ?>">
+                                    <img src="<?php echo $this->getPath($reviewDirs, 'video', $video->name . "-small.jpg"); ?>" alt="Video Review" title="Video Review">
+                                    <img src="<?php echo $this->serverUrl()?>/images/button_play.png" alt="Video Review" title="Video Review" style="width:75px; height:75px; margin-top: -120px; margin-left: 13px;"/>
+                                </a>
+                            </div>
+                        <?php elseif ($review->client_avatar): ?>
+                            <div class="review_video">
+                                <img src="<?php echo $this->getPath($reviewDirs, $review->id, $review->client_avatar); ?>">
+                            </div>
+                        <?php else: ?>
+                            <div class="review_video">
+                                <img src="/images/no-video.png" alt="No Video Available" title="No Video Available">
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="review_rating">
+                            <div id="<?php echo $starRatingId; ?>"></div>
+
+                            <?php
+                                echo $this->ratyScript(array(
+                                    'element'  => "#$starRatingId",
+                                    'readOnly' => true,
+                                    'score'    => $ratings['star']->getRating()
+                                ))->render();
+                            ?>
+
+                            <span>
+                                <?php echo $ratings['percent']->getRating(); ?>%
+                                <?php echo $ratings['letter']->getRating(); ?>
+                            </span>
+                        </div>
+                        <div class="review_text">
+                            <?php if ($review->client_avatar && $video->exists()): ?>
+                                <div class="review_avatar">
+                                    <img src="<?php echo $this->getPath($reviewDirs, $review->id, $review->client_avatar); ?>">
+                                </div>
+                            <?php endif; ?>
+
+                            <strong>
+                                <?php echo $this->escape($review->client_name); ?>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <?php echo $this->dateFormat()->formatFromString($review->created_at); ?>
+                            </strong>
+
+                            <br>
+                            <?php if($review->client_from): ?>
+                                Review from: <?php echo $this->escape($review->client_from); ?> <br />
+                            <?php endif; ?>
+                            <?php echo $this->escape($review->review); ?>
+
+                            <?php if ($review->company_employee_id): ?>
+                                <div>
+                                    Review For <a href="<?php echo $this->urlGenerator()->employeeUrl($review->Employee); ?>"><?php echo $this->escape($review->Employee->name); ?></a>
+                                    <?php if ($review->Employee->position): ?>
+                                        &mdash; <?php echo $review->Employee->position; ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($review->status == Companies_Model_Review::STATUS_PUBLISHED && $review->owner_comment): ?>
+                                <div class="owner-comment-container">
+                                    <div class="owner-comment">
+                                        <div class="owner-comment-header">
+                                            <a href="#toggle" onclick="$('#owner-comment-<?php echo $review->id; ?>').slideToggle();">Owner Comment</a>
+                                        </div>
+                                        <div class="owner-comment-body hide" id="owner-comment-<?php echo $review->id; ?>">
+                                            <?php echo $this->escape($review->owner_comment); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <?php if ($video->exists()): ?>
+                            <div class="review_video_container hide" id="review-video-<?php echo $review->id; ?>" style="width:<?php echo Companies_Model_ReviewService::getVideoWidth($video); ?>px;background:url('<?php echo $this->getPath($reviewDirs, 'video', $video->name . ".jpg"); ?>') no-repeat center center;">
+                                <div class="player is-splash is-paused" id="review-video-player-<?php echo $review->id; ?>" <?php echo Companies_Model_ReviewService::getVideoRatioAttribute($video); ?>>
+                                </div>
+                            </div>
+                            <script>
+                                players.push([<?php echo $review->id; ?>]);
+
+                                $("#review-video-player-<?php echo $review->id; ?>").flowplayer({
+                                    playlist: [[<?php echo $this->videoStreams($reviewDirs, 'video', $video); ?>]],
+                                    swf: '/js/flowplayer/flowplayer.swf',
+                                    engine: 'html5',
+                                    preload: false
+                                });
+                            </script>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <?php
+                if (count($this->paginator) > 1) {
+                    echo $this->paginationControl(
+                        $this->paginator,
+                        'Sliding',
+                        'pagination/digg_pagination_company.phtml',
+                        array(
+                            'route' => $this->company->local_business ? 'company_page' : 'base_action_page',
+                            'params' => $this->paginatorParams
+                        )
+                    );
+                }
+            ?>
+        <?php else: ?>
+            No reviews to display. <a href="<?php echo $this->urlGenerator()->companyReviewAddUrl($this->company); ?>">Write a review</a>.
+        <?php endif; ?>
+    </div>
+</div>
+
+<div class="textarea_right">
+    <?php
+        $aboutVideo = Companies_Model_CompanyVideoTable::getInstance()->getAboutUs(
+            $this->company->id,
+            Companies_Model_CompanyVideo::STATUS_PROCESSED
+        );
+    ?>
+    <?php if ($this->company->about_us || $aboutVideo->exists()): ?>
+        <div class="about_us">
+            <h2>About Us</h2>
+
+            <?php if ($aboutVideo->exists()): ?>
+                <div class="about-video-preview">
+                    <a href="#company-player" id="company-video">
+                        <div style="background:url('<?php echo $this->getPath($this->companyDirsRel, 'videos', $aboutVideo->name) . ".jpg"; ?>') no-repeat center center;background-size:cover;width:100px;height:100px;text-align:center;">
+                            <img src="<?php echo $this->serverUrl()?>/images/button_play.png" style="margin-top:20px;"/>
+                        </div>
+                    </a>
+                </div>
+                <div class="hide">
+                    <div style="width:800px;" class="is-splash is-paused" id="company-player">
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    $(function() {
+                        $("#company-player").flowplayer({
+                            playlist: [[<?php echo $this->videoStreams($this->companyDirsRel, 'videos', $aboutVideo); ?>]],
+                            swf: '/js/flowplayer/flowplayer.swf',
+                            engine: 'html5',
+                            preload: false
+                        });
+                    });
+                </script>
+            <?php endif; ?>
+
+            <?php if ($this->company->about_us): ?>
+                <?php echo $this->escape($this->company->about_us); ?>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->company->Images->count()): ?>
+        <div class="company-gallery">
+            <h2>Business Photos</h2>
+
+            <ul>
+                <?php
+                    foreach ($this->company->Images as $image):
+                        $pathBig = $this->getPath($this->companyDirsRel, 'gallery', $image->name . "." . $image->extension);
+                        $pathSmall = $this->getPath($this->companyDirsRel, 'gallery', $image->name . "-small." . $image->extension);
+                ?>
+                    <li>
+                        <a rel="company_gallery" href="<?php echo $pathBig; ?>" class="fancybox">
+                            <img src="<?php echo $pathSmall; ?>">
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->employees->Count() > 0): ?>
+        <div class="company-employees">
+            <h2>Employees</h2>
+
+            <div class="company-employees-container">
+                <?php
+                    foreach ($this->employees as $employee):
+                        $ratings = $this->ratings()->getAllRatings($employee->rating);
+
+                        if ($employee->photo) {
+                            $path = $this->getPath($this->companyDirsRel, 'employees', $employee->photo);
+                        } else {
+                            $path = "/images/employee.png";
+                        }
+                ?>
+                    <div class="company-employee">
+                        <div class="employee-photo">
+                            <?php if ($employee->public_profile): ?>
+                                <a href="<?php echo $this->urlGenerator()->employeeUrl($employee); ?>">
+                                    <img src="<?php echo $path; ?>">
+                                </a>
+                            <?php else: ?>
+                                <img src="<?php echo $path; ?>">
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="employee-info">
+                            <?php if ($employee->public_profile): ?>
+                                <a href="<?php echo $this->urlGenerator()->employeeUrl($employee); ?>"><?php echo $this->escape($employee->name); ?></a>
+                            <?php else: ?>
+                                <b><?php echo $this->escape($employee->name); ?></b>
+                            <?php endif; ?>
+
+                            <?php if ($employee->position): ?>
+                                <br>
+                                <i><?php echo $this->escape($employee->position); ?></i>
+                            <?php endif; ?>
+
+                            <?php if ($employee->public_profile): ?>
+                                <div class="employee-rating">
+                                    <div class="employee-star-rating">
+                                        <div id="employee-star-rating-<?php echo $employee->id; ?>"></div>
+                                    </div>
+
+                                    <?php
+                                        echo $this->ratyScript(array(
+                                            'element' => '#employee-star-rating-' . $employee->id,
+                                            'readOnly' => true,
+                                            'score' => $ratings['star']->getRating(),
+                                        ))->render();
+                                    ?>
+
+                                    <div class="employee-text-rating">
+                                        <?php echo $ratings['percent']->getRating(); ?>%
+
+                                        <?php if ($employee->review_count > 0): ?>
+                                            <?php echo $ratings['letter']->getRating() ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+
+                                <div>
+                                    <?php echo $employee->review_count; ?> reviews
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->company->latitude && $this->company->longitude && ($this->company->local_business || $this->company->show_address)): ?>
+        <div id="company-map" class="map"></div>
+        <br />
+        <a href="https://maps.google.com/maps?f=d&saddr=&daddr=<?php echo $this->company->latitude ?>,<?php echo $this->company->longitude ?>" target="_blank">
+            Get Directions
+        </a>
+    <?php endif; ?>
+
+    <?php if ($this->articles->count() > 0): ?>
+        <div class="company-articles">
+            <h2>Articles</h2>
+
+            <ul class="article-list">
+                <?php foreach ($this->articles as $article): ?>
+                    <li>
+                        <a href="<?php echo $this->urlGenerator()->companyArticleUrl($this->company, $article); ?>"><?php echo $this->escape($article->title); ?></a>
+
+                        <div class="info">
+                            <span class="label"><?php echo $this->dateFormat()->formatFromString($article->created_at); ?></span>
+                        </div>
+
+                        <div class="intro">
+                            <?php echo Main_Service_UrlLinker::process($this->escape($article->intro)); ?>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+
+            <a href="<?php echo $this->urlGenerator()->companyArticlesUrl($this->company); ?>">All Articles &raquo;</a>
+        </div>
+    <?php endif; ?>
+
+</div>
+
+<?php if ($this->company->latitude && $this->company->longitude && ($this->company->local_business || $this->company->show_address)): ?>
+    <script type="text/javascript">
+        $(function() {
+            function initializeMap() {
+                var Latlng = new google.maps.LatLng(<?php echo $this->company->latitude ?>, <?php echo $this->company->longitude ?>);
+
+                var mapOptions = {
+                    center    : Latlng,
+                    zoom      : 8,
+                    mapTypeId : google.maps.MapTypeId.ROADMAP
+                };
+
+                var map = new google.maps.Map(document.getElementById('company-map'), mapOptions);
+
+                var marker = new google.maps.Marker({
+                    position : Latlng,
+                    title    : '<?php echo $this->escape($this->company->name); ?>',
+                    icon     : '<?php echo $this->config()->google->maps->marker->icon; ?>'
+                });
+
+                marker.setMap(map);
+            }
+
+            initializeMap();
+        });
+    </script>
+<?php endif; ?>
+
+<?php if ($hasVideo): ?>
+    <script type="text/javascript">
+        $(function() {
+            $(".player").flowplayer({
+                swf     : '/js/flowplayer/flowplayer.swf',
+                engine  : 'html5',
+                preload : false
+            });
+
+            var playerObjs = {};
+
+            for (var i = 0; i < players.length; i++)
+                playerObjs[players[i]] = new Player(players[i]);
+
+            players = playerObjs;
+        });
+    </script>
+<?php endif; ?>
+
+<script type="text/javascript">
+    // image gallery
+    $('.fancybox').fancybox();
+
+    // company video
+    $('#company-video').fancybox({
+        afterShow : function () {
+            if (!isHandheld()) {
+                $('#company-player').data('flowplayer').load();
+            }
+        },
+
+        afterClose : function () {
+            if (!isHandheld()) {
+                $('#company-player').data('flowplayer').unload();
+            }
+        }
+    });
+        
+    // review videos
+    $('.fancybox-video').fancybox({
+        afterShow : function () {
+            var id = $(this.element).data('id');
+            players[id].play();
+        },
+
+        afterClose : function () {
+            var id = $(this.element).data('id');
+            players[id].stop();
+        }
+    });
+</script>

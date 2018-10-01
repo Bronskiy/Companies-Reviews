@@ -1,0 +1,34 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a class="btn" href="<?php echo $this->url('business_add_promo'); ?>">Add Promo</a>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if(count($this->paginator)): ?>
+    <ul>
+        <?php foreach($this->paginator as $promo): ?>
+            <li>
+                <a href="<?php echo $this->url('business_promo', array('promoId' => $promo->id )); ?>">
+                    <?php echo $promo->title; ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination.phtml',
+                array(
+                    'route' => 'business_promos_page'
+                )
+            );
+    ?>
+<?php else: ?>
+    No promos to display.
+<?php endif; ?>

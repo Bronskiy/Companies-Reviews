@@ -1,0 +1,6 @@
+{
+    "require": {
+        "braintree/braintree_php": "2.19.0"
+    },
+    "minimum-stability": "dev"
+}

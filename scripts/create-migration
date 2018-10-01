@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./doctrine zfengine-generate-migrations-diff
+./doctrine zfengine-generate-models-yaml

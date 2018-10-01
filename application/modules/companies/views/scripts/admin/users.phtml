@@ -1,0 +1,56 @@
+<div class="wrapper">
+    <div class="buttons">
+        <form enctype="multipart/form-data" method="post" class="form-inline" action="<?php echo $this->url('admin_users'); ?>">
+            <?php echo $this->usersSearchForm->csrf_token; ?>
+            <?php echo $this->usersSearchForm->getElement('search'); ?>
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if (!empty($this->paginator) && count($this->paginator)): ?>
+    <ul class="user-list">
+        <?php foreach($this->paginator as $user):?>
+            <li>
+                <div>
+                    <a href="<?php echo $this->url('admin_user_edit', array( 'id' => $user->id )); ?>">
+                        <?php echo $user->mail; ?>
+                    </a>
+
+                    <a class="close-small" href="#delete" title="Delete" onclick="if (! confirm ('Please Confirm User Deletion to Continue!')) { return false;} $('#delete-user-<?php echo $user->id; ?>').submit();">&times;</a>
+
+                    <?php
+                        echo $this->csrfForm(array(
+                            "id" => "delete-user-" . $user->id,
+                            "class" => "hide",
+                            "action" => $this->url("admin_user_delete", array( "id" => $user->id )),
+                            "postfix" => $user->id,
+                            "submitLabel" => "Delete",
+                        ));
+                    ?>
+
+                    <?php if ($user->company_id): ?>
+                        <br>
+
+                        <a href="<?php echo $this->url("admin_company_edit", array("id" => $user->company_id)); ?>" class="gray"><?php echo $this->escape($user->Company->name); ?></a>
+                    <?php endif; ?>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination.phtml',
+                array( 'route' => 'admin_users_page' )
+            );
+    ?>
+<?php else: ?>
+    No users to display.
+<?php endif; ?>

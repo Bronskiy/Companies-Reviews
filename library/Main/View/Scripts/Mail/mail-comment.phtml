@@ -1,0 +1,17 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    You've received a new <a href="<?php echo $this->commentsUrl; ?>">article comment</a> for entry <a href="<?php echo $this->articleUrl; ?>"><?php echo $this->escape($this->article); ?></a>.
+</p>
+
+<p>
+    Name: <?php echo $this->name; ?><br>
+    E-mail: <?php echo $this->email; ?><br>
+    Comment: <?php echo $this->comment; ?><br>
+</p>
+
+<p>
+    Please publish this comment if you want to appear it on the website.
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

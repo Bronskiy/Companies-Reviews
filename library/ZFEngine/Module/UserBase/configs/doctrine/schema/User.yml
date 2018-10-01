@@ -1,0 +1,33 @@
+## Пользователь
+
+ZFEngine_Module_UserBase_Model_User:
+  tableName: users
+  actAs:
+    Timestampable:
+  options:
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    email:
+      type: string(128)
+      notnull: true
+      unique: true
+      email: true
+    login:
+      type: string(128)
+      notnull: false
+      unique: true
+    password_hash: string(32)
+    password_salt: string(8)
+    role:
+      type: enum
+      notnull: true
+      values: [administrator, member, moderator]
+      default: member
+    password_reset_code: string(8)
+    password_reset_code_created_at: timestamp(25)

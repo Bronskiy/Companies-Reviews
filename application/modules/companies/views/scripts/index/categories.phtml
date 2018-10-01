@@ -1,0 +1,29 @@
+<?php if (count($this->paginator)): ?>
+    <ul class="category-list">
+        <?php foreach ($this->paginator as $category): ?>
+            <li>
+                <a href="<?php echo $this->url("category", array("category" => $category->uri)); ?>">
+                    <?php echo $this->escape($category->name); ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                "Sliding",
+                "pagination/digg_pagination_company.phtml",
+                array(
+                    "route" => "categories_page",
+                    "params" => array(
+                        "letter" => $this->letter
+                    )
+                )
+            );
+        }
+    ?>
+<?php else: ?>
+    No categories to display.
+<?php endif; ?>

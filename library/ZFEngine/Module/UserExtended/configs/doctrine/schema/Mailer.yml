@@ -1,0 +1,7 @@
+## Очередь рассылки
+
+ZFEngine_Module_UserExtended_Model_Mailer:
+  tableName: mailer
+  inheritance:
+    extends: ZFEngine_Module_UserBase_Model_Mailer
+    type: concrete

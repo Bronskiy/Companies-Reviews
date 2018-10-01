@@ -1,0 +1,8 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    New company profile: <a href="<?php echo $this->companyUrl; ?>"><?php echo $this->companyName; ?></a><br>
+    User: <a href="<?php echo $this->url; ?>"><?php echo $this->name ? $this->name : $this->email; ?></a>
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

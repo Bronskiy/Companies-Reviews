@@ -1,0 +1,213 @@
+<div id="navigation">
+    <div class="wrapper clearfix">
+        <div class="nav_area">
+            <div class="nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/pricing">Partner Program</a></li>
+                    <li><a href="<?php echo $this->url("static_how_it_works"); ?>">How It Works</a></li>
+                    <!--<li><a href="#">Free Trial</a></li>-->
+                    <li><a href="<?php echo $this->url('companies'); ?>">Companies</a></li>
+
+                    <?php if (isset($this->company) && $this->company instanceof Companies_Model_Company || in_array(Zend_Controller_Front::getInstance()->getRequest()->getActionName(), array('top-city-cat', 'top-cat'))): ?>
+                        <?php if ($url = $this->urlGenerator()->topRatedUrl($this->company)): ?>
+                            <li><a href="<?php echo $url ?>">Top Rated</a></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if (isset($this->company) && $this->company instanceof Companies_Model_Company): ?>
+                        <?php if ($url = $this->urlGenerator()->companyArticlesUrl($this->company)): ?>
+                            <li><a href="<?php echo $url ?>">Articles</a></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
+            </div>
+
+
+            <div class="mobile-menus">
+              <a href="#menu" id="toggle"><span></span></a>
+              <div id="menu">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/pricing">Partner Program</a></li>
+                    <li><a href="<?php echo $this->url("static_how_it_works"); ?>">How It Works</a></li>
+                    <!--<li><a href="#">Free Trial</a></li>-->
+                    <li><a href="<?php echo $this->url('companies'); ?>">Companies</a></li>
+
+                    <?php if (isset($this->company) && $this->company instanceof Companies_Model_Company || in_array(Zend_Controller_Front::getInstance()->getRequest()->getActionName(), array('top-city-cat', 'top-cat'))): ?>
+                        <?php if ($url = $this->urlGenerator()->topRatedUrl($this->company)): ?>
+                            <li><a href="<?php echo $url ?>">Top Rated</a></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if (isset($this->company) && $this->company instanceof Companies_Model_Company): ?>
+                        <?php if ($url = $this->urlGenerator()->companyArticlesUrl($this->company)): ?>
+                            <li><a href="<?php echo $url ?>">Articles</a></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
+              </div>
+            </div>
+
+
+
+
+            <div class="social_media">
+                <ul>
+                    <li><a href="#"><img src="/images/icons/facebook.png" alt="" title="Facebook" /></a></li>
+                    <li><a href="#"><img src="/images/icons/twitter.png" alt="" title="Twitter" /></a></li>
+                    <li><a href="#"><img src="/images/icons/google+.png" alt="" title="Google+" /></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+$value="";
+$('#txtname').focus(function() {
+
+ 
+     $("#txtname").val("");
+  });
+$('#txtname').blur(function() {
+  if($('#txtname').val()=="")
+{
+$('#txtname').val("Name:");
+}
+});
+
+$('#txtphone').focus(function() {
+
+ 
+     $("#txtphone").val("");
+  });
+$('#txtphone').blur(function() {
+  if($('#txtphone').val()=="")
+{
+$('#txtphone').val("Phone:");
+}
+});
+
+
+$('#txtemail').focus(function() {
+ 
+     $("#txtemail").val("");
+  });
+$("#txtemail").blur(function() {
+  if($("#txtemail").val()=="")
+{
+$("#txtemail").val("Email:");
+}
+});
+
+
+$('#txthear').focus(function() {
+ 
+     $("#txthear").val("");
+  });
+$("#txthear").blur(function() {
+  if($("#txthear").val()=="")
+{
+$("#txthear").val("How did you hear about us?");
+}
+});
+
+$('#txtcomment').focus(function() {
+ 
+     $("#txtcomment").val("");
+  });
+$("#txtcomment").blur(function() {
+  if($("#txtcomment").val()=="")
+{
+$("#txtcomment").val("Comment:");
+}
+});
+
+$("#button").click(function(){
+var sub=false;
+ $('form :input').each(function(){
+
+   if($(this).val()=="Name:"  || $(this).val()=="Phone:" || $(this).val()=="Email:" || $(this).val()=="How did you hear about us?" || $(this).val()=="Comment:")   
+{sub=true;
+
+return false;
+}
+else
+{
+sub=false;
+}
+
+     });
+
+if(sub) {
+alert("Please all the fields");
+ }
+else{ 
+$("#contactus").submit();
+ }
+   
+});
+
+
+
+});
+
+
+
+</script>
+
+
+
+
+
+<script type="text/javascript">
+  var theToggle = document.getElementById('toggle');
+
+// based on Todd Motto functions
+// http://toddmotto.com/labs/reusable-js/
+
+// hasClass
+function hasClass(elem, className) {
+  return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
+}
+// addClass
+function addClass(elem, className) {
+    if (!hasClass(elem, className)) {
+      elem.className += ' ' + className;
+    }
+}
+// removeClass
+function removeClass(elem, className) {
+  var newClass = ' ' + elem.className.replace( /[\t\r\n]/g, ' ') + ' ';
+  if (hasClass(elem, className)) {
+        while (newClass.indexOf(' ' + className + ' ') >= 0 ) {
+            newClass = newClass.replace(' ' + className + ' ', ' ');
+        }
+        elem.className = newClass.replace(/^\s+|\s+$/g, '');
+    }
+}
+// toggleClass
+function toggleClass(elem, className) {
+  var newClass = ' ' + elem.className.replace( /[\t\r\n]/g, " " ) + ' ';
+    if (hasClass(elem, className)) {
+        while (newClass.indexOf(" " + className + " ") >= 0 ) {
+            newClass = newClass.replace( " " + className + " " , " " );
+        }
+        elem.className = newClass.replace(/^\s+|\s+$/g, '');
+    } else {
+        elem.className += ' ' + className;
+    }
+}
+
+theToggle.onclick = function() {
+   toggleClass(this, 'on');
+   return false;
+}
+</script>
+
+
+
+
+
+

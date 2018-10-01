@@ -1,0 +1,72 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a class="btn" href="<?php echo $this->url("admin_company_article", array("id" => $this->company->id, "articleId" => $this->article->id)); ?>">&lt; Article</a>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if ($this->paginator && count($this->paginator)): ?>
+    <ul class="article-comment-list">
+        <?php foreach ($this->paginator as $comment): ?>
+            <li>
+                <div>
+                    <div class="pull-right">
+                        <a class="close-small" href="#delete" title="Delete" onclick="if (!confirm('Please Confirm Comment Deletion to Continue!')) {return false;} $('#delete-comment-<?php echo $comment->id; ?>').submit();">&times;</a>
+                    </div>
+
+                    <div class="user">
+                        <span><?php echo $this->escape($comment->name); ?></span> /
+                        <a href="mailto:<?php echo $this->escape($comment->email); ?>"><?php echo $this->escape($comment->email); ?></a>
+                    </div>
+
+                    <div class="info">
+                        <span class="label"><?php echo $this->dateFormat()->formatFromString($comment->created_at); ?></span>
+
+                        <?php if ($comment->published): ?>
+                            <span class="label label-success">Published @ <?php echo $this->dateFormat()->formatFromString($comment->created_at, "m/d/Y H:i"); ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="comment">
+                        <?php echo $this->escape($comment->comment); ?>
+                    </div>
+
+                    <a class="btn" href="<?php echo $this->url("admin_company_article_comment_publish", array("id" => $this->company->id, "articleId" => $this->article->id, "commentId" => $comment->id)); ?>">
+                        <?php echo ($comment->published) ? "Unpublish" : "Publish"; ?>
+                    </a>
+
+                    <?php
+                        echo $this->csrfForm(array(
+                            "id" => "delete-comment-" . $comment->id,
+                            "class" => "hide",
+                            "action" => $this->url("admin_company_article_comment_delete", array("id" => $this->company->id, "articleId" => $this->article->id, "commentId" => $comment->id)),
+                            "postfix" => $comment->id,
+                            "submitLabel" => "Delete",
+                        ));
+                    ?>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                "Sliding",
+                "pagination/digg_pagination_company.phtml",
+                array(
+                    "route" => "admin_company_article_comments_page",
+                    "params" => array(
+                        "id" => $this->company->id,
+                        "articleId" => $this->article->id,
+                    )
+                )
+            );
+        }
+    ?>
+<?php else: ?>
+    No comments to display.
+<?php endif; ?>

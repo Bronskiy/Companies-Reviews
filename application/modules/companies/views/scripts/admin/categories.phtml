@@ -1,0 +1,54 @@
+<div class="wrapper">
+    <div class="buttons">
+        <form enctype="application/x-www-form-urlencoded" method="post" class="form-inline" action="<?php echo $this->url("admin_categories"); ?>">
+            <?php echo $this->categorySearchForm->csrf_token; ?>
+            <?php echo $this->categorySearchForm->getElement("search"); ?>
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </div>
+    
+    <div class="buttons">
+        <a href="<?php echo $this->url('admin_category_add'); ?>" class="btn">Add Category</a>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if (!empty($this->paginator) && count($this->paginator)): ?>
+    <ul class="category-list">
+        <?php foreach($this->paginator as $category):?>
+            <li>
+                <div>
+                    <a href="<?php echo $this->url('admin_category_edit', array("id" => $category->id)); ?>">
+                        <?php echo $category->name; ?>
+                    </a>
+
+                    <a class="close-small" href="#delete" title="Delete" onclick="if (! confirm ('Please Confirm Category Deletion to Continue!')) { return false;} $('#delete-category-<?php echo $category->id; ?>').submit();">&times;</a>
+
+                    <?php
+                        echo $this->csrfForm(array(
+                            "id" => "delete-category-" . $category->id,
+                            "class" => "hide",
+                            "action" => $this->url("admin_category_delete", array("id" => $category->id)),
+                            "postfix" => $category->id,
+                            "submitLabel" => "Delete",
+                        ));
+                    ?>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1)
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination.phtml',
+                array( 'route' => 'admin_categories_page' )
+            );
+    ?>
+<?php else: ?>
+    No categories to display.
+<?php endif; ?>

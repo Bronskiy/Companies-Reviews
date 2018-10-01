@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="zfengine" basedir="." default="build">
+    <property name="builddir" value="./build" />
+ 
+    <target name="init">
+        <mkdir dir="${builddir}" />
+        <mkdir dir="${builddir}/logs" />
+    </target>
+ 
+    <target name="clean">
+        <echo msg="Clean..." />
+        <delete dir="${builddir}" />
+    </target>
+ 
+    <target name="build" depends="clean,init,phpcpd" />
+ 
+    <target name="phpcpd">
+        <exec command="phpcpd --log-pmd ${builddir}/logs/pmd.xml ." escape="false" />
+    </target>
+</project>

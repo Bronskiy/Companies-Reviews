@@ -1,0 +1,51 @@
+<h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+<hr>
+
+
+<div id="contentBox" style="margin:0px auto; width:100%">
+    <div id="column1" style="float:left; width:35%;">
+        <?php echo $this->partial('service/banner-code.phtml', array('company' => $this->company, 'style' => 'vertical', 'includeScripts' => false)); ?>
+        <br>
+        <input class="btn" type="button" value="Banner Source" href="#divForm" id="btnForm">
+
+        <div id="divForm" class="hide">
+            <pre><?php echo $this->escape($this->partial('service/banner-code.phtml', array('company' => $this->company, 'style' => 'vertical'))); ?></pre>
+        </div>
+
+        <script type="text/javascript">
+            $("#btnForm").fancybox();
+        </script>
+    </div>
+
+    <div id="column2" style="float:left; width:30%;">
+        <?php echo $this->partial('service/banner-code.phtml', array('company' => $this->company, 'style' => 'small', 'includeScripts' => false)); ?>
+        <br>
+        <input type="button" class="btn" value="Banner Source" href="#divForm1" id="btnForm1">
+
+        <div id="divForm1" class="hide">
+            <pre><?php echo $this->escape($this->partial('service/banner-code.phtml', array('company' => $this->company, 'style' => 'small'))); ?></pre>
+        </div>
+
+        <script type="text/javascript">
+            $("#btnForm1").fancybox();
+        </script>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <hr>
+
+    <div id="column3" style="float:left; width:35%;">
+        <?php echo $this->partial('service/banner-code.phtml', array('company' => $this->company, 'style' => 'square', 'includeScripts' => false)); ?>
+        <br>
+        <input type="button" class="btn" value="Banner Source" href="#divForm2" id="btnForm2">
+
+        <div id="divForm2" class="hide">
+            <pre><?php echo $this->escape($this->partial('service/banner-code.phtml', array('company' => $this->company, 'style' => 'square'))); ?></pre>
+        </div>
+
+        <script type="text/javascript">
+            $("#btnForm2").fancybox();
+        </script>
+    </div>
+</div>

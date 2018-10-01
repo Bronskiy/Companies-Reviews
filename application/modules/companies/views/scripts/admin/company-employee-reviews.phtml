@@ -1,0 +1,209 @@
+<div class="wrapper">
+    <div class="buttons">
+        <div class="float-right">
+            <select class="review-status-filter" onchange="reviewStatus($(this).val());">
+                <option value="all">All</option>
+
+                <?php foreach (Companies_Model_ReviewService::getAvailableStatuses(true) as $status): ?>
+                    <option value="<?php echo $status; ?>" <?php if ($status == $this->status) echo "selected"; ?>><?php echo Companies_Model_ReviewService::getTextByStatus($status); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="float-right">
+            <a class="btn" href="<?php echo $this->url("admin_company_employee", array("id" => $this->company->id, "employeeId" => $this->employee->id)); ?>">&lt; <?php echo $this->escape($this->employee->name); ?> Profile</a>
+        </div>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php $hasVideo = false; ?>
+
+<script type="text/javascript">
+    var players = [];
+</script>
+
+<?php if ($this->paginator && count($this->paginator)): ?>
+    <div class="review_area_big">
+        <?php foreach ($this->paginator as $review): ?>
+            <?php
+                $reviewDirs = $this->getDirs(new Main_Service_Dir_Generator_Review($review), false);
+                $ratings = $this->ratings()->getAllRatings($review->rating);
+                $starRatingId = 'review-star-' . $review->id;
+            ?>
+
+            <div class="review_area_inn_big">
+                <a class="close" href="#delete" title="Delete" onclick="if (! confirm ('Please Confirm Review Deletion to Continue!')) { return false;} $('#delete-review-<?php echo $review->id; ?>').submit();">&times;</a>
+
+                <?php
+                    $video = Companies_Model_CompanyVideoTable::getInstance()->getReviewVideo($review->company_id, $review->id);
+
+                    if ($video->exists()):
+                        $hasVideo = true;
+                ?>
+                    <div class="review_video">
+                        <a href="#review-video-<?php echo $review->id; ?>" class="fancybox-video" data-id="<?php echo $review->id; ?>">
+                            <img src="<?php echo $this->getPath($reviewDirs, 'video', $video->name . "-small.jpg"); ?>" alt="Video Review" title="Video Review"><img src="<?php echo $this->serverUrl()?>/images/button_play.png" alt="Video Review" title="Video Review" shape-rendering="crispEdges" style="width:65px; height:65px; margin-top: -120px; margin-left: 18px;" />
+                        </a>
+                    </div>
+                <?php elseif ($review->client_avatar): ?>
+                    <div class="review_video">
+                        <img src="<?php echo $this->getPath($reviewDirs, $review->id, $review->client_avatar); ?>" alt="Text Review" title="Text Review">
+                    </div>
+                <?php else: ?>
+                    <div class="review_video">
+                        <?php if ($ratings['percent']->getRating() >= '70'): ?>
+                            <img src="/images/thumbsUp.png" style="height:100px" alt="Text Review" title="Text Review">
+                        <?php else: ?>
+                            <img src="/images/thumbsDown.png" style="height:100px" alt="Text Review" title="Text Review">
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="review_rating">
+                    <div id="<?php echo $starRatingId; ?>"></div>
+
+                    <?php
+                        echo $this->ratyScript(array(
+                            'element'  => "#$starRatingId",
+                            'readOnly' => true,
+                            'score'    => $ratings['star']->getRating()
+                        ))->render();
+                    ?>
+
+                    <span>
+                        <?php echo $ratings['percent']->getRating(); ?>%
+                        <?php echo $ratings['letter']->getRating(); ?>
+                    </span>
+                </div>
+
+                <?php
+                    if (in_array($review->status, array(
+                        Companies_Model_Review::STATUS_NOT_PROCESSED,
+                        Companies_Model_Review::STATUS_PUBLISHED,
+                        Companies_Model_Review::STATUS_UNCONFIRMED,
+                        Companies_Model_Review::STATUS_RECONCILIATION
+                    )))
+                        echo $this->csrfForm(array(
+                            'id' => 'delete-review-' . $review->id,
+                            'class' => 'hide',
+                            'action' => $this->url('admin_company_employee_review_delete', array('id' => $this->company->id, "employeeId" => $this->employee->id, "reviewId" => $review->id)),
+                            'postfix' => $review->id,
+                            'submitLabel' => 'Delete'
+                        ));
+                ?>
+
+                <div class="review_text_big">
+                    <a href="<?php echo $this->url('admin_company_edit', array( 'id' => $review->company_id )); ?>"><?php echo $review->Company->name; ?></a>
+
+                    <br>
+
+                    <?php if ($review->client_avatar && $video->exists()): ?>
+                        <div class="review_avatar">
+                            <img src="<?php echo $this->getPath($reviewDirs, $review->id, $review->client_avatar); ?>">
+                        </div>
+                    <?php endif; ?>
+
+                    <strong>
+                        <?php echo $this->escape($review->client_name); ?>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <?php echo $this->dateFormat()->formatFromString($review->created_at); ?>&nbsp;&nbsp;&nbsp;&nbsp;
+
+                        <?php
+                            $labelClass = '';
+
+                            if ($review->status == Companies_Model_Review::STATUS_PUBLISHED) {
+                                $labelClass = ' label-success';
+                            } else if ($review->status == Companies_Model_Review::STATUS_ERROR) {
+                                $labelClass = ' label-important';
+                            } else if ($review->status == Companies_Model_Review::STATUS_RECONCILIATION) {
+                                $labelClass = ' label-warning';
+                            }
+                        ?>
+
+                        <span class="label<?php echo $labelClass; ?>"><?php echo Companies_Model_ReviewService::getTextStatus($review); ?></span>
+                    </strong>
+
+                    <br>
+
+                    <?php if($review->client_from): ?>
+                        From: <?php echo $this->escape($review->client_from); ?> <br>
+                    <?php endif; ?>
+
+                    <?php echo $this->escape($review->review); ?>
+
+                    <?php if ($review->company_employee_id): ?>
+                        <div>
+                            Employee: <a href="<?php echo $this->url("admin_company_employee", array("id" => $review->company_id, "employeeId" => $review->Employee->id)); ?>"><?php echo $this->escape($review->Employee->name); ?></a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <?php if ($video->exists()): ?>
+                    <div class="review_video_container hide" id="review-video-<?php echo $review->id; ?>" style="width:<?php echo Companies_Model_ReviewService::getVideoWidth($video); ?>px;background:url('<?php echo $this->getPath($reviewDirs, 'video', $video->name . ".jpg"); ?>') no-repeat center center;">
+                        <div class="player is-splash is-paused" id="review-video-player-<?php echo $review->id; ?>" <?php echo Companies_Model_ReviewService::getVideoRatioAttribute($video); ?>>
+                        </div>
+                    </div>
+                    <script>
+                        players.push([<?php echo $review->id; ?>]);
+
+                        $("#review-video-player-<?php echo $review->id; ?>").flowplayer({
+                            playlist: [[<?php echo $this->videoStreams($reviewDirs, 'video', $video); ?>]],
+                            swf: '/js/flowplayer/flowplayer.swf',
+                            engine: 'html5',
+                            preload: false
+                        });
+                    </script>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                'Sliding',
+                'pagination/digg_pagination_company.phtml',
+                array(
+                    'route' => 'admin_company_employee_reviews_page',
+                    "params" => array(
+                        "id" => $this->company->id,
+                        "employeeId" => $this->employee->id,
+                    )
+                )
+            );
+        }
+    ?>
+<?php else: ?>
+    No reviews to display.
+<?php endif; ?>
+
+<?php if ($hasVideo): ?>
+    <script type="text/javascript">
+        $(function() {
+            var playerObjs = {};
+
+            for (var i = 0; i < players.length; i++) {
+                playerObjs[players[i]] = new Player(players[i]);
+            }
+
+            players = playerObjs;
+        });
+    </script>
+<?php endif; ?>
+
+<script type="text/javascript">
+    // videos
+    $('.fancybox-video').fancybox({
+        afterShow : function () {
+            var id = $(this.element).data('id');
+            players[id].play();
+        },
+        afterClose : function () {
+            var id = $(this.element).data('id');
+            players[id].stop();
+        }
+    });
+</script>

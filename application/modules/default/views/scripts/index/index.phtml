@@ -1,0 +1,271 @@
+<div id="banner_bg">
+    <div class="wrapper">
+        <div class="slider">
+            <ul class="bxslider">
+                <li>
+                    <div class="slide">
+                        <div class="slide-picture">
+                            <img src="images/slider/slide1.png">
+                        </div>
+
+                        <h3>Real Time Reviews from Real People</h3>
+
+                        <p>
+                            In just minutes you can review your favorite restaurant, coffee shop, pizza
+                            place and any place of business using a smartphone or tablet. Just login using
+                            the unique interface system provided by the store owner or your own device.
+                            Take a text review or video and rate your experience bad or good on the spot or
+                            at a later time at your convenience. It's that simple! You will not only help
+                            the owners evaluate their business but also let others know of your real time
+                            experience.
+                        </p>
+
+                        <div class="app-links">
+                            <!--<div class="link">
+                                <a href="https://itunes.apple.com/us/app/revudio/id669950762?l=en&mt=8" target="_blank"><img src="images/app/apple.png"></a>
+                            </div>
+                            <div class="link">
+                                <a href="https://play.google.com/store/apps/details?id=com.revudio.revudio" target="_blank"><img src="images/app/google.png"></a>
+                            </div>-->
+                        </div>
+
+                        <a href="<?php echo $this->url("static_how_it_works"); ?>"><img src="images/slider/how_it_works.png" alt="How It Works"></a>
+                    </div>
+                </li>
+                <li>
+                    <div class="slide">
+                        <div class="slide-picture">
+                            <img src="images/slider/slide2.png">
+                        </div>
+
+                        <h3>Upload Your Own Video Reviews</h3>
+
+                        <p>
+                            Create and capture your own video reviews for business or pleasure.
+                            Access our responsive based website using your IPhone, IPad and Android based smartphones or tablets and start capturing video testimonials and make comments and rate your favorite business or service company. Video review your favorite restaurant, beach spot, hair saloon. Its all possible with just a touch of your smartphone and tablet device.
+                        </p>
+
+                        <div class="app-links">
+                            <!--<div class="link">
+                                <a href="https://itunes.apple.com/us/app/revudio/id669950762?l=en&mt=8" target="_blank"><img src="images/app/apple.png"></a>
+                            </div>
+                            <div class="link">
+                                <a href="https://play.google.com/store/apps/details?id=com.revudio.revudio" target="_blank"><img src="images/app/google.png"></a>
+                            </div>-->
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="video_sec">
+    <div class="wrapper">
+        <div class="vid_sec_main">
+            <div class="vid_left">Latest Revudios</div>
+            <div class="vid_sec_inn">
+                <?php if (count($this->reviews) > 0): ?>
+                    <ul>
+                        <?php foreach ($this->reviews as $review): ?>
+                            <?php
+                                $reviewDirs = $this->getDirs(new Main_Service_Dir_Generator_Review($review), false);
+                                $ratings = $this->ratings()->getAllRatings($review->rating);
+                                $video = Companies_Model_CompanyVideoTable::getInstance()->getReviewVideo($review->company_id, $review->id);
+                            ?>
+                            <li>
+                                <div class="title">
+                                    <a href="<?php echo $this->urlGenerator()->companyUrl($review->Company); ?>">
+                                        <?php
+                                            $companyName = $review->Company->name;
+
+                                            if (mb_strlen($companyName) > 12) {
+                                                $companyName = mb_substr($companyName, 0, 12) . "...";
+                                            }
+
+                                            echo $this->escape($companyName);
+                                        ?>
+                                    </a>
+                                </div>
+                                <div class="video">
+                                    <a href="<?php echo $this->urlGenerator()->companyUrl($review->Company); ?>">
+                                        <?php if ($video->exists()): ?>
+                                            <img src="<?php echo $this->getPath($reviewDirs, 'video', $video->name . "-small.jpg"); ?>" alt="Video Review" title="Video Review"><img src="<?php echo $this->serverUrl() ?>/images/button_play.png" alt="Video Review" title="Video Review" style="width:75px; height:75px; margin-top: -120px; margin-left: 13px; "/>
+                                        <?php elseif ($review->client_avatar): ?>
+                                            <img src="<?php echo $this->getPath($reviewDirs, $review->id, $review->client_avatar); ?>" alt="Text Review" title="Text Review">
+                                        <?php else: ?>
+                                            <?php if ($ratings['percent']->getRating() >= '70'): ?>
+                                                <img src="/images/thumbsUp.png" style="height:100px" alt="Text Review" title="Text Review">
+                                            <?php else: ?>
+                                                <img src="/images/thumbsDown.png" style="height:100px" alt="Text Review" title="Text Review">
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </a>
+                                </div>
+                                 <?php if ($video->exists()): ?>
+									<div class="rating" style="margin-top:-20px;">
+                                    <?php echo $ratings['percent']->getRating(); ?>%
+                                    <?php echo $ratings['letter']->getRating(); ?>
+									</div>
+                                <?php else: ?>
+									<div class="rating" style="margin-top:0px;">
+                                    <?php echo $ratings['percent']->getRating(); ?>%
+                                    <?php echo $ratings['letter']->getRating(); ?>
+									</div>
+                                <?php endif; ?>
+
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="top_hon_bg">
+    <div class="wrapper">
+        <div class="top_hon_inn">
+            <div class="top_hon_left">
+                <div class="top_headding">
+                    <div class="heading_left">Top Honors</div><span><img src="images/hadig_img.png" alt="" style="margin-top:0px" /></span>
+                </div>
+                <div class="top_hon_con">
+                    <?php foreach ($this->companies as $company): ?>
+                        <?php
+                            $ratings = $this->ratings()->getAllRatings($company->rating);
+                            $starRatingId = 'company-star-' . $company->id;
+                        ?>
+                        <div class="hon_con_left">
+                            <a href="<?php echo $this->urlGenerator()->companyUrl($company); ?>">
+                                <?php
+                                    $companyName = $company->name;
+
+                                    if (mb_strlen($companyName) > 20) {
+                                        $companyName = mb_substr($companyName, 0, 20) . "...";
+                                    }
+
+                                    echo $this->escape($companyName);
+                                ?>
+
+                                <br>
+
+                                <?php if ($company->local_business): ?>
+                                    <span class="location"><?php echo $this->escape($company->city); ?>, <?php echo $this->escape($company->state); ?></span>
+                                <?php endif; ?>
+                            </a>
+                            <div class="rating">
+                                <div id="<?php echo $starRatingId; ?>" class="star-rating"></div>
+
+                                <div class="text-rating">
+                                    <?php echo $ratings['percent']->getRating(); ?>%
+
+                                    <?php if ($company->review_count > 0): ?>
+                                        <?php echo $ratings['letter']->getRating(); ?>
+                                    <?php endif; ?>
+                                </div>
+
+                                <?php
+                                    echo $this->ratyScript(array(
+                                        'element'  => "#$starRatingId",
+                                        'readOnly' => true,
+                                        'score'    => $ratings['star']->getRating()
+                                    ))->render();
+                                ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="top_hon_right">
+                <div class="heading_right">How Revudio Works</div>
+                <div class="how_video">
+                    <a href="#how-it-works-player" id="how-it-works-video">
+                        <img src="/images/revid2.png" alt="How It Works" title="How It Works">
+                    </a>
+                </div>
+                <div class="hide">
+                    <div style="width:800px" class="is-splash is-paused" id="how-it-works-player">
+                        <video preload="none" poster="/images/revid2.png">
+                            <source type="video/mp4" src="/video/how-it-works.mp4">
+                        </video>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    $(function() {
+                        $("#how-it-works-player").flowplayer({
+                            swf     : '/js/flowplayer/flowplayer.swf',
+                            engine  : 'html5',
+                            preload : false
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="txt_botm_main">
+    <div class="wrapper">
+        <div class="txt_botm_inner">
+            <div class="iphone"><img src="images/iphone.png" alt="" /></div>
+            <div class="txt_med">
+                <div class="txt_med_inn">
+                    <div class="txt_med_top">Capture all your customers reviews through your smartphone or tablet device</div>
+                    <div class="txt_med_img">
+                        <span><img src="images/img1.png" alt="" /></span>
+                        <span><img src="images/img2.png" alt="" /></span>
+                        <span style="margin:0px;"><img src="images/img3.png" alt="" /></span>
+                    </div>
+                </div>
+                <div class="txt_rght_img"><img src="images/side_img2.png" alt="" /></div>
+            </div>
+            <div class="txt_area_botm">
+                <div class="txt_botm_lft_img"><img src="images/side_img1.png" alt="" /></div>
+                <div class="txt_area_botm_txt">
+                    Doing a good job and keeping your customers happy is your number one priority right?
+                    Well why not take the intiative and record those happy smiles from your customers after
+                    your job is completed and done to your customers satisfaction. Revudio takes those live
+                    one on one moments with your customers and brings it to life. All you have to do is sign
+                    into your profile and start capturing live video reviews on the spot using your smartphone.
+
+                    <?php if (!Zend_Auth::getInstance()->hasIdentity()): ?>
+                        <a href="<?php echo $this->url('signup'); ?>">Click here to get started!</a>
+                    <?php endif; ?>
+                </div>
+                <div class="txt_botm_rgt_img"><img src="images/bttm_notbok.png" alt="" /></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.bxslider').bxSlider({
+            'pager'        : false,
+            'controls'     : false,
+            'auto'         : true,
+            'speed'        : 1000,
+            'slideMargin'  : 0,
+            'touchEnabled' : false,
+            'pause'        : 6000,
+            'startSlide'   : 0,
+            autoHover: true
+        });
+    });
+
+    // how it works video
+    $('#how-it-works-video').fancybox({
+        afterShow : function () {
+            if (!isHandheld()) {
+                $('#how-it-works-player').data('flowplayer').load();
+            }
+        },
+
+        afterClose : function () {
+            if (!isHandheld()) {
+                $('#how-it-works-player').data('flowplayer').unload();
+            }
+        }
+    });
+</script>

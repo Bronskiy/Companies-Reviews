@@ -1,0 +1,9 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    You or someone else has requested a password recovery for your account on Revudio.
+    In order to recover your password please follow this link -
+    <a href="<?php echo $this->restoreUrl; ?>"><?php echo $this->restoreUrl; ?></a>.
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

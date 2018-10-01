@@ -1,0 +1,74 @@
+<a href="<?php echo ($this->company->uri);?>">&lt;&lt; Back to Company Profile</a>
+<br>
+
+<div class="company-article-page">
+    <div class="info">
+        <span class="label"><?php echo $this->dateFormat()->formatFromString($this->article->created_at); ?></span>
+    </div>
+
+    <div class="content">
+        <?php echo Main_Service_UrlLinker::process($this->article->content); ?>
+    </div>
+</div>
+
+<div class="company-article-comments">
+    <div class="add-comment pull-right">
+        <a href="#add-comment" class="btn" onclick="$('.form').slideToggle();">Add Comment</a>
+    </div>
+
+    <h3>Comments</h3>
+
+    <div class="clearfix"></div>
+
+    <div class="form hide">
+        <form enctype="multipart/form-data" method="post" class="form-horizontal" action="<?php echo $this->urlGenerator()->companyArticleUrl($this->company, $this->article); ?>">
+            <fieldset>
+                <?php echo $this->form->csrf_token; ?>
+
+                <?php
+                    foreach ($this->form->getElements() as $element):
+                        if ($element->getName() == "csrf_token") {
+                            continue;
+                        }
+                ?>
+                    <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                        <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                        <div class="controls">
+                          <?php echo $element; ?>
+
+
+                            <?php if ($element->getMessages()): ?>
+                                <span class="help-block"><?php echo implode("", $element->getMessages()); ?></span>
+                            <?php elseif ($element->getDescription()): ?>
+                                <span class="help-block"><?php echo $element->getDescription(); ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn">Send</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <?php if (count($this->comments) > 0): ?>
+        <div class="comments">
+            <?php foreach ($this->comments as $comment): ?>
+                <div class="comment">
+                    <div class="info">
+                        <span class="label"><?php echo $this->dateFormat()->formatFromString($comment->created_at, "m/d/Y H:i"); ?></span>
+                        <span><?php echo $this->escape($comment->name); ?></span>
+                    </div>
+
+                    <div class="comment">
+                        <?php echo $this->escape($comment->comment); ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>

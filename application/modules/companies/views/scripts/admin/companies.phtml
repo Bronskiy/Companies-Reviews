@@ -1,0 +1,126 @@
+<div class="wrapper">
+    <div class="buttons">
+        <form enctype="application/x-www-form-urlencoded" method="post" class="form-inline" action="<?php echo $this->url('admin_companies'); ?>">
+            <?php echo $this->companiesSearchForm->csrf_token; ?>
+            <?php echo $this->companiesSearchForm->getElement("search"); ?>
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </div>
+
+    <div class="buttons">
+        <select class="company-status-filter" onchange="companyStatus($(this).val());">
+            <option value="all">All</option>
+
+            <?php foreach (Companies_Model_CompanyService::getAvailableStatuses(true) as $status): ?>
+                <option value="<?php echo $status; ?>" <?php if ($status == $this->status) echo "selected"; ?>><?php echo Companies_Model_CompanyService::getTextByStatus($status); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div class="buttons">
+        <a href="<?php echo $this->url("admin_companies_import"); ?>" class="btn">Import</a>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<?php if (!empty($this->paginator) && count($this->paginator)): ?>
+    <ul class="company-list">
+        <?php foreach ($this->paginator as $company): ?>
+            <li>
+                <div>
+                    <div class="pull-right">
+                        <a class="close-small" href="#delete" title="Delete" onclick="if (! confirm ('Please Confirm Company Deletion to Continue!')) { return false;} $('#delete-company-<?php echo $company->id; ?>').submit();">&times;</a>
+                    </div>
+
+                    <a href="<?php echo $this->url("admin_company_edit", array("id" => $company->id)); ?>">
+                        <?php echo $company->name; ?>
+
+                        <?php if (!empty($company->code_letter) || !empty($company->code_num)): ?>
+                            <?php echo trim(implode(array($company->code_letter, $company->code_num), "-"), "-"); ?>
+                        <?php endif; ?>
+                    </a>
+
+                    <div class="info">
+                        <?php
+                            $class = "";
+
+                            switch ($company->status) {
+                                case Companies_Model_Company::STATUS_ACTIVE:
+                                    $class = "label-success";
+                                    break;
+
+                                case Companies_Model_Company::STATUS_EXPIRED:
+                                    $class = "label-warning";
+                                    break;
+
+                                case Companies_Model_Company::STATUS_SUSPENDED:
+                                    $class = "label-important";
+                                    break;
+
+                                case Companies_Model_Company::STATUS_TAKEN:
+                                    $class = "label-inverse";
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        ?>
+                        <span class="label <?php echo $class; ?>"><?php echo Companies_Model_CompanyService::getTextByStatus($company->status); ?></span>
+                    </div>
+
+                    <?php if ($company->status == Companies_Model_Company::STATUS_TAKEN): ?>
+                        <div class="approve-disapprove">
+                            <a class="btn" href="#approve" title="Approve" onclick="if (!confirm('Are you sure you want to APPROVE this company listing verification?')) { return false; } $('#approve-company-<?php echo $company->id; ?>').submit();">Approve</a>&nbsp;
+                            <a class="btn" href="#disapprove" title="Disapprove" onclick="if (!confirm('Are you sure you want to DISAPPROVE this company listing verification?')) { return false; } $('#disapprove-company-<?php echo $company->id; ?>').submit();">Disapprove</a>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php
+                        echo $this->csrfForm(array(
+                            "id" => "delete-company-" . $company->id,
+                            "class" => "hide",
+                            "action" => $this->url("admin_company_delete", array("id" => $company->id)),
+                            "postfix" => "delete-" . $company->id,
+                            "submitLabel" => "Delete",
+                        ));
+                    ?>
+
+                    <?php
+                        if ($company->status == Companies_Model_Company::STATUS_TAKEN) {
+                            echo $this->csrfForm(array(
+                                "id" => "approve-company-" . $company->id,
+                                "class" => "hide",
+                                "action" => $this->url("admin_company_approve", array("id" => $company->id)),
+                                "postfix" => "approve-" . $company->id,
+                                "submitLabel" => "Approve",
+                            ));
+
+                            echo $this->csrfForm(array(
+                                "id" => "disapprove-company-" . $company->id,
+                                "class" => "hide",
+                                "action" => $this->url("admin_company_disapprove", array("id" => $company->id)),
+                                "postfix" => "disapprove-" . $company->id,
+                                "submitLabel" => "Disapprove",
+                            ));
+                        }
+                    ?>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php
+        if (count($this->paginator) > 1) {
+            echo $this->paginationControl(
+                $this->paginator,
+                "Sliding",
+                "pagination/digg_pagination.phtml",
+                array("route" => "admin_companies_page")
+            );
+        }
+    ?>
+<?php else: ?>
+    No companies to display.
+<?php endif; ?>

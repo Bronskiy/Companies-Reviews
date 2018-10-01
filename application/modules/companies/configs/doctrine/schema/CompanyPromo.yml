@@ -1,0 +1,34 @@
+Companies_Model_CompanyPromo:
+  tableName: company_promo
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      notnull: true
+      autoincrement: true
+    title:
+      type: string(255)
+      notnull: true
+    content:
+      type: clob(65535)
+      notnull: true
+    company_id:
+      type: integer(4)
+      notnull: true
+    status:
+      type: enum
+      values: ['idle', 'new', 'all']
+      notnull: true
+      default: idle
+  relations:
+    Company:
+      class: Companies_Model_Company
+      local: company_id
+      foreign: id
+      foreignAlias: Promos
+      onDelete: cascade
+      onUpdate: cascade

@@ -1,0 +1,36 @@
+<?php echo $this->doctype(); ?>
+
+<html>
+
+    <head>
+
+        <?php echo $this->headMeta(); ?>
+
+        <?php echo $this->headTitle(); ?>
+
+        <link rel="shortcut icon" href="/images/icons/favicon.ico">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <?php echo $this->headLink(); ?>
+
+        <?php echo $this->headScript(); ?>
+
+    </head>
+
+    <body>
+
+        <?php echo $this->render('partial/header.phtml'); ?>
+
+        <?php echo $this->render('partial/navigation.phtml'); ?>
+
+
+
+        <?php echo $this->layout()->content; ?>
+
+
+
+        <?php echo $this->render('partial/footer.phtml'); ?>
+
+    </body>
+
+</html>
+

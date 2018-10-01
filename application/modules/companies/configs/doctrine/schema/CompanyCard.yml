@@ -1,0 +1,48 @@
+Companies_Model_CompanyCard:
+  tableName: company_cards
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      unsigned: true
+      notnull: true
+      autoincrement: true
+    company_id:
+      type: integer(4)
+      notnull: true
+    number:
+      type: string(16)
+      notnull: true
+      fixed: true
+    exp_date:
+      type: string(7)
+      notnull: true
+      fixed: true
+    type:
+      type: string(1000)
+      notnull: false
+    token:
+      type: string(100)
+      notnull: true
+    name:
+      type: string(1000)
+    address:
+      type: string(1000)
+    zip:
+      type: string(10)
+    city:
+      type: string(1000)
+    state:
+      type: string(2)
+  relations:
+    Company:
+      class: Companies_Model_Company
+      local: company_id
+      foreign: id
+      foreignAlias: Cards
+      onDelete: cascade
+      onUpdate: cascade

@@ -1,0 +1,40 @@
+<p>
+    Please make sure all info is correct and you are an assigned employee of the company.
+    We will contact you within 30 days of sign up to ensure that you are a representative of the company and we can confirm
+    the legitimacy of the account. You must use a company affiliated email address when entering the information below.
+</p>
+
+<br>
+
+<form enctype="application/x-www-form-urlencoded" method="post" class="form-horizontal" action="<?php echo $this->urlGenerator()->companyListingVerificationUrl($this->company); ?>">
+    <fieldset>
+        <?php echo $this->form->csrf_token; ?>
+
+        <?php
+            foreach ($this->form->getElements() as $element):
+                if ($element->getName() == "csrf_token") {
+                    continue;
+                }
+        ?>
+            <div class="control-group <?php if ($element->getMessages()) echo "error"; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                  <?php echo $element; ?>
+
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode("", $element->getMessages()); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Send</button>
+                &nbsp;or&nbsp;
+                <a href="<?php echo $this->urlGenerator()->companyUrl($this->company); ?>">Go Back</a>
+            </div>
+        </div>
+    </fieldset>
+</form>

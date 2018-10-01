@@ -1,0 +1,124 @@
+<div class="wrapper">
+    <div class="buttons">
+        <a href="#show-states" class="btn" onclick="$('#states').slideToggle();"><i class="icon icon-chevron-down"></i> States</a>
+    </div>
+
+    <div class="buttons">
+        <form enctype="multipart/form-data" method="post" class="form-inline" action="<?php echo $this->url("search"); ?>">
+            <input id="search" name="search" type="text" value="">
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </div>
+
+    <h1 class="page-title"><?php echo $this->escape(isset($this->customTitle) ? $this->customTitle : $this->title); ?></h1>
+    <hr>
+</div>
+
+<div class="letter-panes">
+    <div class="letter-container">
+        <div class="title">Categories</div>
+        <div class="letters">
+            <?php foreach (str_split(Main_Const::ALPHABET) as $letter): ?>
+                <div class="letter">
+                    <a href="<?php echo $this->url("categories", array("letter" => strtolower($letter))); ?>"><?php echo $letter; ?></a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div class="letter-container">
+        <div class="title">Companies</div>
+        <div class="letters">
+            <?php foreach (str_split(Main_Const::ALPHABET) as $letter): ?>
+                <div class="letter">
+                    <a href="<?php echo $this->url("companies_letter", array("letter" => strtolower($letter))); ?>"><?php echo $letter; ?></a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<div id="states" class="states hide">
+    <h3 class="sub-title">States</h3>
+
+    <?php if (!empty($this->states)): ?>
+        <ul class="states">
+            <?php foreach($this->states as $state): ?>
+                <li>
+                    <a href="<?php echo $this->url("state", array("state" => strtolower($state["c_state"]))); ?>">
+                        <?php echo $this->states()->getStateNameByKey($state["c_state"]); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        No states to display.
+    <?php endif; ?>
+</div>
+
+<?php $categoryCount = 0; ?>
+
+<div class="category-list">
+    <?php if (count($this->uncategorizedCompanies) > 0): ?>
+        <?php $categoryCount++; ?>
+        <div class="category">
+            <b>Uncategorized</b><br>
+
+            <ul class="company-list">
+                <?php foreach ($this->uncategorizedCompanies as $company): ?>
+                    <li>
+                        <a href="<?php echo $company->uri; ?>">
+                            <?php echo $this->escape($company->name); ?>
+
+                            <?php if ($company->local_business): ?>
+                                <?php echo $this->escape($company->city); ?>, <?php echo $this->escape($company->state); ?>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($this->paginator)): ?>
+        <?php foreach($this->paginator as $category): ?>
+            <?php if ($category->Companies->count() > 0): ?>
+                <?php $categoryCount++; ?>
+                <div class="category">
+                    <b><?php echo $this->escape($category->name); ?></b><br>
+
+                    <ul class="company-list">
+                        <?php foreach ($category->Companies as $company): ?>
+                            <li>
+                                <a href="<?php echo $company->uri; ?>">
+                                    <?php echo $this->escape($company->name); ?>
+
+                                    <?php if ($company->local_business): ?>
+                                        <?php echo $this->escape($company->city); ?>, <?php echo $this->escape($company->state); ?>
+                                    <?php endif; ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($categoryCount % 3 == 0): ?>
+                <div style="clear:both;"></div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+
+        <div class="clearfix"></div>
+
+        <?php
+            if (count($this->paginator) > 1) {
+                echo $this->paginationControl(
+                    $this->paginator,
+                    "Sliding",
+                    "pagination/digg_pagination.phtml",
+                    array("route" => "companies_page")
+                );
+            }
+        ?>
+    <?php endif; ?>
+</div>

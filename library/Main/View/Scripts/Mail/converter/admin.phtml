@@ -1,0 +1,9 @@
+<?php echo $this->render("partial/header.phtml"); ?>
+
+<p>
+    New review with rating <?php echo sprintf("%d", (int)($this->review->rating * 100)); ?>% added to
+    <a href="<?php echo $this->companyUrl; ?>"><?php echo $this->companyName; ?></a> company profile.
+    Review processing status: <?php echo $this->review->status; ?>.
+</p>
+
+<?php echo $this->render("partial/footer.phtml"); ?>

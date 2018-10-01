@@ -1,0 +1,126 @@
+Companies_Model_Company:
+  tableName: companies
+  options:
+    type: INNODB
+    collate: utf8_unicode_ci
+    charset: utf8
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      notnull: true
+      autoincrement: true
+    category_id:
+      type: integer(4)
+      default: null
+    plan_id:
+      type: integer(4)
+      unsigned: true
+      default: null
+    discount_id:
+      type: integer(4)
+      unsigned: true
+      default: null
+    logo:
+      type: string(255)
+    name:
+      type: string(255)
+      notnull: true
+    address:
+      type: string(255)
+    city:
+      type: string(255)
+      notnull: true
+    state:
+      type: string(10)
+      notnull: true
+    zip:
+      type: integer(4)
+    phone:
+      type: string(100)
+    website:
+      type: string(255)
+    mail:
+      type: string(255)
+    business_since:
+      type: integer(2)
+    owner:
+      type: string(255)
+    about_us:
+      type: clob(65535)
+    latitude:
+      type: string(100)
+    longitude:
+      type: string(100)
+    facebook_link:
+      type: string(100)
+    twitter_link:
+      type: string(100)
+    linkedin_link:
+      type: string(100)
+    google_link:
+      type: string(100)
+    offered_services:
+      type: clob(65535)
+    code_letter:
+      type: string(4)
+      default: null
+      fixed: true
+    code_num:
+      type: string(5)
+      default: null
+    rating_goal:
+      type: integer(4)
+      default: null
+    status:
+      type: enum
+      values: ['active','deleted','expired','suspended','not_activated','cancelled','unowned','taken']
+      notnull: true
+      default: not_activated
+    uri:
+      type: string(200)
+      default: null
+    payment_date:
+      type: timestamp
+    subscription_id:
+      type: string(50)
+      default: null
+    local_business:
+      type: integer(1)
+      unsigned: true
+      notnull: true
+      default: 1
+    show_address:
+      type: integer(1)
+      unsigned: true
+      notnull: true
+      default: 1
+    yelp_link:
+      type: string(100)
+    review_email_text:
+      type: clob(65535)
+  relations:
+    Category:
+      class: Companies_Model_Category
+      local: category_id
+      foreign: id
+      foreignAlias: Companies
+      onDelete: set null
+      onUpdate: cascade
+    Plan:
+      class: Companies_Model_Plan
+      local: plan_id
+      foreign: id
+      foreignAlias: Companies
+      onDelete: cascade
+      onUpdate: cascade
+    Discount:
+      class: Companies_Model_Discount
+      local: discount_id
+      foreign: id
+      foreignAlias: Companies
+      onDelete: set null
+      onUpdate: cascade
+  indexes:
+    companies_state:
+      fields: [state]    

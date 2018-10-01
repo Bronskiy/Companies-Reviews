@@ -1,0 +1,38 @@
+<form enctype="application/x-www-form-urlencoded" method="post" class="form-horizontal" action="<?php echo $this->action; ?>" <?php if ($this->id) echo "id=\"{$this->id}\""; ?>>
+    <fieldset>
+        <?php echo $this->form->csrf_token; ?>
+
+        <?php
+            foreach ($this->form->getElements() as $element):
+                if ($element->getName() == "csrf_token") {
+                    continue;
+                }
+        ?>
+            <div class="control-group <?php if ($element->getMessages()) echo "error"; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                  <?php echo $element; ?>
+
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php elseif ($element->getDescription()): ?>
+                        <span class="help-block"><?php echo $element->getDescription(); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <?php if ($this->button): ?>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn"><?php echo $this->button; ?></button>
+                    <?php if ($this->extraButton): ?>
+                        &nbsp;or&nbsp;
+                        <a href="<?php echo $this->extraButton['url']; ?>"><?php echo $this->extraButton['label']; ?></a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </fieldset>
+</form>

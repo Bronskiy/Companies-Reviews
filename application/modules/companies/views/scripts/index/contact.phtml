@@ -1,0 +1,52 @@
+<style>
+    input[type=text]{
+        width:280px
+    }
+
+    textarea{
+        width:280px;
+        height:150px;
+    }
+
+    dt{float:left;}
+
+    dd {
+        margin-left: 130px;
+    }
+
+    table tr:last-child {
+       display: none;
+    }
+</style>
+
+<form enctype="application/x-www-form-urlencoded" method="post" class="form-horizontal" action="<?php echo $this->urlGenerator()->companyContactUrl($this->company); ?>">
+    <fieldset>
+        <?php echo $this->contactForm->csrf_token; ?>
+
+        <?php
+            foreach ($this->contactForm->getElements() as $element):
+                if ($element->getName() == 'csrf_token')
+                    continue;
+        ?>
+            <div class="control-group <?php if ($element->getMessages()) echo 'error'; ?>">
+                <label class="control-label" for="<?php echo $element->getId(); ?>"><?php echo $element->getLabel(); ?></label>
+                <div class="controls">
+                  <?php echo $element; ?>
+
+
+                    <?php if ($element->getMessages()): ?>
+                        <span class="help-block"><?php echo implode('', $element->getMessages()); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Send</button>
+                &nbsp;or&nbsp;
+                <a href="<?php echo $this->urlGenerator()->companyUrl($this->company); ?>">Go Back</a>
+            </div>
+        </div>
+    </fieldset>
+</form>

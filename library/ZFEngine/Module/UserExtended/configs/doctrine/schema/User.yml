@@ -1,0 +1,14 @@
+## Пользователь
+
+ZFEngine_Module_UserExtended_Model_User:
+  tableName: users
+  inheritance:
+    extends: ZFEngine_Module_UserBase_Model_User
+    type: concrete
+  columns:
+    activated: boolean
+    activation_code: string(8)
+    registered: boolean
+    registration_ip:
+      type: string(15)
+      ip: true

@@ -1,0 +1,58 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Doctrine CLI script
+ */
+
+require_once 'common.php';
+
+$cli = new Doctrine_Cli($application->getOption('doctrine_cli'));
+
+if (!isset($_SERVER['argv'][1])) {
+    echo $cli->getFormatter()->format("Для справки по дополнительным командам выполните скрипт с ключом info \n", 'HEADER');
+    echo $cli->getFormatter()->format("Для справки по стандартным командам выполните скрипт с ключом help \n\n", 'HEADER');
+}
+
+if (@$_SERVER['argv'][1] == 'info') {
+    echo "\n";
+    
+    echo $cli->getFormatter()->format("zfengine-generate-migrations-models", 'INFO');
+    echo $cli->getFormatter()->format(" -> для генерации новой миграций \n", 'NONE');
+
+    echo $cli->getFormatter()->format("zfengine-generate-migrations-diff", 'INFO');
+    echo $cli->getFormatter()->format(" -> для генерации изменений миграций \n");
+
+    echo $cli->getFormatter()->format("zfengine-generate-models-yaml", 'INFO');
+    echo $cli->getFormatter()->format(" -> для генерация моделей из yaml-файлов \n");
+    
+    echo $cli->getFormatter()->format("zfengine-dump-data", 'INFO');
+    echo $cli->getFormatter()->format(" -> для генерация fixtures из БД \n");
+    
+    echo $cli->getFormatter()->format("zfengine-load-data", 'INFO');
+    echo $cli->getFormatter()->format(" -> для загрузки fixtures в БД \n");
+    
+    echo $cli->getFormatter()->format("zfengine-prepare-schema-files-for-migrations", 'INFO');
+    echo $cli->getFormatter()->format(" -> для копирования shema-файлов для сравнения при генерации миграций \n");
+
+    echo "\n";
+    echo $cli->getFormatter()->format("Очередность действий:\n", 'COMMENT');
+    echo $cli->getFormatter()->format("\t При создании новой миграции:\n", 'COMMENT');
+    echo $cli->getFormatter()->format("\t\t zfengine-generate-models-yaml \n", 'INFO');
+    echo $cli->getFormatter()->format("\t\t zfengine-generate-migrations-models \n", 'INFO');
+    echo $cli->getFormatter()->format("\t\t migrate \n", 'INFO');
+    echo $cli->getFormatter()->format("\t При создании изменений миграции:\n", 'COMMENT');
+    echo $cli->getFormatter()->format("\t\t zfengine-generate-migrations-diff \n", 'INFO');
+    echo $cli->getFormatter()->format("\t\t zfengine-generate-models-yaml \n", 'INFO');
+    echo $cli->getFormatter()->format("\t\t migrate \n", 'INFO');
+    echo "\n";
+    exit;
+}
+
+$cli->registerTaskClass('ZFEngine_Doctrine_Task_GenerateModelsYaml');
+$cli->registerTaskClass('ZFEngine_Doctrine_Task_GenerateMigrationsModels');
+$cli->registerTaskClass('ZFEngine_Doctrine_Task_GenerateMigrationsDiff');
+$cli->registerTaskClass('ZFEngine_Doctrine_Task_DumpData');
+$cli->registerTaskClass('ZFEngine_Doctrine_Task_LoadData');
+$cli->registerTaskClass('ZFEngine_Doctrine_Task_PrepareSchemaFilesForMigrations');
+
+$cli->run($_SERVER['argv']);
